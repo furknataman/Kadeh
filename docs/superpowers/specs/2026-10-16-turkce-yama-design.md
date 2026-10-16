@@ -28,7 +28,8 @@ kaldırılınca İngilizceye dönüyor.
 ## Kaynaklar (araştırmanın sonucu)
 - **turkceyama.com**: en büyük ücretsiz ve girişsiz arşiv (sitemap'te 1166 yama sayfası). Spider-Man yaması buradan.
 - **anonymousceviri.com**: üyelikli (199 TL'den) + kendi Windows istemcisi → yalnızca bağlantı.
-- **apexyama.com**: DonanımHaber'de "Ücretli Yamalar" altında → yalnızca bağlantı.
+- **apexyama.com**: insan çevirisi, v1.1 (2 Nisan 2026); sayfada ücretsiz yazıyor ama indirme Apex web/masaüstü
+  uygulamasından → `account`, yalnızca bağlantı.
 - **oyundunyasi.net**: Calypso launcher + Discord kimliği/sunucusu şartı → katalogda yer almaz.
 - Kataloğu olmayan oyunlar için sheet'te tek bir "turkceyama.com'da ara" bağlantısı (site araması, tarayıcıda).
 
@@ -60,7 +61,7 @@ kaynağı olabilir (ücretsiz + ücretli). Kütüphanedeki Steam kartı App ID t
 ]
 ```
 
-`access` değerleri: `free` (kurulabilir) ve `paid` (yalnızca bağlantı). `file`/`installer` yalnızca `free`
+`access` değerleri: `free` (kurulabilir), `paid` ve `account` (hesap/kendi uygulaması gerekiyor; ikisi de yalnızca bağlantı). `file`/`installer` yalnızca `free`
 için zorunlu; eksikse kayıt da yalnızca bağlantı olarak gösterilir.
 
 ## Akış
@@ -76,7 +77,8 @@ için zorunlu; eksikse kayıt da yalnızca bağlantı olarak gösterilir.
    - Arşiv `/usr/bin/bsdtar` ile bottle içinde geçici bir klasöre açılır (RAR5 dahil; Spider-Man dosyası `.zip`
      uzantılı bir RAR5). Yükleyici Wine'da sorun çıkarmasın diye ASCII bir ada kopyalanır.
    - `modifiedFiles` oyun klasöründeki `.kadeh-yama/<yama-id>/` altına yedeklenir.
-   - Yükleyici `Wine.runProgram` ile görünür çalıştırılır; Kadeh bitmesini bekler.
+   - Yükleyici `Wine.runProgram` ile görünür çalıştırılır. `runProgram` `start /unix` kullandığı için hemen döner;
+     kullanıcı yükleyiciyi bitirince sheet'teki "Yükleyici bitti" düğmesine basar, Kadeh ondan sonra devam eder.
    - `addedFiles` oluşmadıysa kurulum başarısız sayılır, yedek geri yüklenir.
    - `fixup` varsa çalıştırılır (aşağıda). Başarısız olursa yedek geri yüklenir, eklenen dosyalar silinir.
    - `.kadeh-yama/<yama-id>/state.json`: kurulum tarihi, dosya sha256'sı, kurulum sonrası `modifiedFiles` hash'leri.
