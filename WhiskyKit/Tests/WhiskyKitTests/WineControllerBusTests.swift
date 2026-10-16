@@ -20,7 +20,7 @@ import Foundation
 import Testing
 @testable import WhiskyKit
 
-/// Covers when ``Wine/syncControllerBus(bottle:runtimeHasSDL:importer:)`` writes winebus's options.
+/// Covers when ``Wine/syncControllerBus(bottle:runtimeLacksSDL:importer:)`` writes winebus's options.
 /// The `reg import` itself is not run, same policy as the CJK font sync.
 @Suite("Wine Controller Bus Tests")
 struct WineControllerBusTests {
@@ -55,14 +55,14 @@ struct WineControllerBusTests {
     func noSDLNeedsOptions() throws {
         let bottle = try makeBottle(systemReg: Self.systemReg())
         defer { try? FileManager.default.removeItem(at: bottle) }
-        #expect(WineControllerBus.needsOptions(runtimeHasSDL: false, bottleURL: bottle))
+        #expect(WineControllerBus.needsOptions(runtimeLacksSDL: true, bottleURL: bottle))
     }
 
     @Test("A runtime with SDL keeps its SDL bus")
     func sdlRuntimeIsLeftAlone() throws {
         let bottle = try makeBottle(systemReg: Self.systemReg())
         defer { try? FileManager.default.removeItem(at: bottle) }
-        #expect(!WineControllerBus.needsOptions(runtimeHasSDL: true, bottleURL: bottle))
+        #expect(!WineControllerBus.needsOptions(runtimeLacksSDL: false, bottleURL: bottle))
     }
 
     @Test("Nothing to do once both values are saved")
@@ -70,25 +70,26 @@ struct WineControllerBusTests {
         let values = "\n\"DisableInput\"=dword:00000001\n\"Enable SDL\"=dword:00000000"
         let bottle = try makeBottle(systemReg: Self.systemReg(values: values))
         defer { try? FileManager.default.removeItem(at: bottle) }
-        #expect(!WineControllerBus.needsOptions(runtimeHasSDL: false, bottleURL: bottle))
+        #expect(!WineControllerBus.needsOptions(runtimeLacksSDL: true, bottleURL: bottle))
     }
 
     @Test("Waits for a prefix that has no system.reg yet")
     func waitsForThePrefix() throws {
         let bottle = try makeBottle(systemReg: nil)
         defer { try? FileManager.default.removeItem(at: bottle) }
-        #expect(!WineControllerBus.needsOptions(runtimeHasSDL: false, bottleURL: bottle))
+        #expect(!WineControllerBus.needsOptions(runtimeLacksSDL: true, bottleURL: bottle))
     }
 
-    @Test("Finds SDL where the runtime ships it")
+    @Test("Looks for SDL in the runtime's Wine/lib, and leaves other layouts alone")
     func findsRuntimeSDL() throws {
         let libraries = try makeBottle(systemReg: nil)
         defer { try? FileManager.default.removeItem(at: libraries) }
-        #expect(!WineControllerBus.runtimeHasSDL(libraryFolder: libraries))
+        #expect(!WineControllerBus.runtimeLacksSDL(libraryFolder: libraries))
         let lib = libraries.appending(path: "Wine/lib")
         try FileManager.default.createDirectory(at: lib, withIntermediateDirectories: true)
+        #expect(WineControllerBus.runtimeLacksSDL(libraryFolder: libraries))
         try Data().write(to: lib.appending(path: "libSDL2-2.0.0.dylib"))
-        #expect(WineControllerBus.runtimeHasSDL(libraryFolder: libraries))
+        #expect(!WineControllerBus.runtimeLacksSDL(libraryFolder: libraries))
     }
 
     @Test("Imports SDL off and input off under the CurrentControlSet link")
@@ -97,7 +98,7 @@ struct WineControllerBusTests {
         let url = try makeBottle(systemReg: Self.systemReg())
         defer { try? FileManager.default.removeItem(at: url) }
         var documents: [String] = []
-        await Wine.syncControllerBus(bottle: Bottle(bottleUrl: url), runtimeHasSDL: false) { document, _ in
+        await Wine.syncControllerBus(bottle: Bottle(bottleUrl: url), runtimeLacksSDL: true) { document, _ in
             documents.append(document)
         }
         #expect(documents == [

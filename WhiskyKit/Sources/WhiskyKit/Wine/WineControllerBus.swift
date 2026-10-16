@@ -43,19 +43,23 @@ enum WineControllerBus {
         ("DisableInput", "dword:00000001")
     ]
 
-    /// Whether the runtime ships the SDL that winebus loads by name. The 4.x
-    /// runtimes ship none, and their winebus cannot use one anyway.
-    static func runtimeHasSDL(libraryFolder: URL = WhiskyWineInstaller.libraryFolder) -> Bool {
-        let sdl = libraryFolder.appending(path: "Wine/lib/libSDL2-2.0.0.dylib")
-        return FileManager.default.fileExists(atPath: sdl.path(percentEncoded: false))
+    /// Whether the runtime's `Wine/lib` lacks the SDL that winebus loads by
+    /// name. The 4.x runtimes ship none, and their winebus cannot use one
+    /// anyway. A runtime without `Wine/lib` is a layout this check does not
+    /// know, so it is left alone.
+    static func runtimeLacksSDL(libraryFolder: URL = WhiskyWineInstaller.libraryFolder) -> Bool {
+        let lib = libraryFolder.appending(path: "Wine/lib")
+        let manager = FileManager.default
+        return manager.fileExists(atPath: lib.path(percentEncoded: false))
+            && !manager.fileExists(atPath: lib.appending(path: "libSDL2-2.0.0.dylib").path(percentEncoded: false))
     }
 
     /// Whether a bottle still needs the options, read from its prefix without
-    /// starting Wine. Never when the runtime has SDL, and not when
+    /// starting Wine. Only when the runtime lacks SDL, and not when
     /// `system.reg` cannot be read yet.
-    static func needsOptions(runtimeHasSDL: Bool, bottleURL: URL) -> Bool {
+    static func needsOptions(runtimeLacksSDL: Bool, bottleURL: URL) -> Bool {
         let systemReg = bottleURL.appending(path: "system.reg")
-        guard !runtimeHasSDL, FileManager.default.fileExists(atPath: systemReg.path(percentEncoded: false)) else {
+        guard runtimeLacksSDL, FileManager.default.fileExists(atPath: systemReg.path(percentEncoded: false)) else {
             return false
         }
         return values.contains {
@@ -80,13 +84,13 @@ extension Wine {
     @MainActor
     static func syncControllerBus(
         bottle: Bottle,
-        runtimeHasSDL: Bool = WineControllerBus.runtimeHasSDL(),
+        runtimeLacksSDL: Bool = WineControllerBus.runtimeLacksSDL(),
         importer: RegistryImporter = { try await importRegistry(document: $0, bottle: $1) }
     ) async {
         // Off the main actor: the whole hive is read, and it grows with the prefix.
         let bottleURL = bottle.url
         let needed = await Task.detached(priority: .userInitiated) {
-            WineControllerBus.needsOptions(runtimeHasSDL: runtimeHasSDL, bottleURL: bottleURL)
+            WineControllerBus.needsOptions(runtimeLacksSDL: runtimeLacksSDL, bottleURL: bottleURL)
         }.value
         guard needed else {
             return
