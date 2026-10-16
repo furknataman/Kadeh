@@ -2078,6 +2078,67 @@
       }
     },
     {
+      "id": "god-of-war-ragnarok",
+      "title": "God of War Ragnar\u00f6k",
+      "aliases": [
+        "God of War Ragnarok",
+        "GoWR"
+      ],
+      "subtitle": "Santa Monica Studio / Jetpack Interactive / Sony",
+      "store": "steam",
+      "steamAppId": 2322010,
+      "rating": "unverified",
+      "exeNames": [
+        "GoWR.exe"
+      ],
+      "pathPatterns": [
+        "god of war ragnarok"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 12 only; DXVK and DXMT have no Direct3D 12 path, so the game needs the recommended backend with the GPTK (D3DMetal) payload imported"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": false,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [
+        "CodeWeavers lists it as Limited Functionality on CrossOver 26.2"
+      ],
+      "knownIssues": [],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.codeweavers.com/compatibility/crossover/god-of-war-ragnarok"
+      }
+    },
+    {
       "id": "granblue-fantasy-relink",
       "title": "Granblue Fantasy: Relink",
       "aliases": [
@@ -2145,6 +2206,143 @@
         "author": "Whisky Community",
         "lastUpdated": "2026-04-30T00:00:00Z",
         "referenceURL": "https://github.com/whisky-app/whisky/issues/805"
+      }
+    },
+    {
+      "id": "gta-v-enhanced",
+      "title": "Grand Theft Auto V Enhanced",
+      "aliases": [
+        "GTA V Enhanced",
+        "GTA 5 Enhanced"
+      ],
+      "subtitle": "Rockstar North / Rockstar Games",
+      "store": "steam",
+      "steamAppId": 3240220,
+      "rating": "unverified",
+      "exeNames": [
+        "GTA5_Enhanced.exe"
+      ],
+      "pathPatterns": [
+        "grand theft auto v enhanced"
+      ],
+      "antiCheat": "BattlEye",
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 12 only; DXVK and DXMT have no Direct3D 12 path, so the game needs the recommended backend with the GPTK (D3DMetal) payload imported"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": false,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [
+        "Needs the Rockstar Games Launcher; Whisky starts it alongside the game for this Steam App ID",
+        "GTA Online is protected by BattlEye and is not expected to work; story mode only"
+      ],
+      "knownIssues": [
+        {
+          "description": "Rockstar Games Launcher may hang at the logo or fail sign-in under Wine",
+          "severity": "major",
+          "workaround": "Keep the launcher on DXVK (the Recommended backend does this for launchers) and retry sign-in"
+        }
+      ],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.codeweavers.com/compatibility/crossover/grand-theft-auto-v-enhanced"
+      }
+    },
+    {
+      "id": "gta-v-legacy",
+      "title": "Grand Theft Auto V Legacy",
+      "aliases": [
+        "GTA V",
+        "GTA 5",
+        "GTAV"
+      ],
+      "subtitle": "Rockstar North / Rockstar Games",
+      "store": "steam",
+      "steamAppId": 271590,
+      "rating": "unverified",
+      "exeNames": [
+        "GTA5.exe"
+      ],
+      "pathPatterns": [
+        "grand theft auto v"
+      ],
+      "antiCheat": "BattlEye",
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 11 title; the recommended backend picks D3DMetal with the GPTK payload, DXMT or DXVK without it"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": false,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [
+        "Needs the Rockstar Games Launcher; Whisky starts it alongside the game for this Steam App ID",
+        "GTA Online is protected by BattlEye and is not expected to work; story mode only"
+      ],
+      "knownIssues": [
+        {
+          "description": "Rockstar Games Launcher may hang at the logo or fail sign-in under Wine",
+          "severity": "major",
+          "workaround": "Keep the launcher on DXVK (the Recommended backend does this for launchers) and retry sign-in"
+        }
+      ],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.codeweavers.com/compatibility/crossover/grand-theft-auto-v"
       }
     },
     {
@@ -2859,6 +3057,186 @@
         "author": "Whisky Community",
         "lastUpdated": "2026-04-30T00:00:00Z",
         "referenceURL": "https://github.com/whisky-app/whisky/issues/694"
+      }
+    },
+    {
+      "id": "spider-man-2",
+      "title": "Marvel's Spider-Man 2",
+      "aliases": [
+        "Spider-Man 2",
+        "Spiderman 2"
+      ],
+      "subtitle": "Insomniac Games / Nixxes / Sony",
+      "store": "steam",
+      "steamAppId": 2651280,
+      "rating": "unverified",
+      "exeNames": [
+        "Spider-Man2.exe"
+      ],
+      "pathPatterns": [
+        "marvel's spider-man 2"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 12 only; DXVK and DXMT have no Direct3D 12 path, so the game needs the recommended backend with the GPTK (D3DMetal) payload imported",
+            "Reported to need AVX2 (unconfirmed), so Rosetta is told to advertise AVX"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": true,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [],
+      "knownIssues": [],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.codeweavers.com/compatibility/crossover/marvels-spider-man-2"
+      }
+    },
+    {
+      "id": "spider-man-remastered",
+      "title": "Marvel's Spider-Man Remastered",
+      "aliases": [
+        "Spider-Man Remastered",
+        "Spiderman Remastered"
+      ],
+      "subtitle": "Insomniac Games / Nixxes / Sony",
+      "store": "steam",
+      "steamAppId": 1817070,
+      "rating": "unverified",
+      "exeNames": [
+        "Spider-Man.exe"
+      ],
+      "pathPatterns": [
+        "marvel's spider-man remastered"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 12 only; DXVK and DXMT have no Direct3D 12 path, so the game needs the recommended backend with the GPTK (D3DMetal) payload imported"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": false,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [
+        "AppleGamingWiki rates CrossOver with GPTK as Perfect on an M3 Max"
+      ],
+      "knownIssues": [],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.applegamingwiki.com/wiki/Marvel%E2%80%99s_Spider-Man_Remastered"
+      }
+    },
+    {
+      "id": "spider-man-miles-morales",
+      "title": "Marvel's Spider-Man: Miles Morales",
+      "aliases": [
+        "Miles Morales",
+        "Spider-Man Miles Morales"
+      ],
+      "subtitle": "Insomniac Games / Nixxes / Sony",
+      "store": "steam",
+      "steamAppId": 1817190,
+      "rating": "unverified",
+      "exeNames": [
+        "MilesMorales.exe"
+      ],
+      "pathPatterns": [
+        "marvel's spider-man miles morales"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "recommended",
+          "label": "Recommended backend",
+          "isDefault": true,
+          "whenToUse": "Default configuration; Whisky picks the backend for the installed runtime",
+          "rationale": [
+            "DirectX 12 only; DXVK and DXMT have no Direct3D 12 path, so the game needs the recommended backend with the GPTK (D3DMetal) payload imported"
+          ],
+          "settings": {
+            "graphicsBackend": "recommended",
+            "dxvk": false,
+            "dxvkAsync": false,
+            "enhancedSync": "msync",
+            "shaderCacheEnabled": true,
+            "avxEnabled": false,
+            "sequoiaCompatMode": false
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [
+            "vcrun2022"
+          ]
+        }
+      ],
+      "notes": [],
+      "knownIssues": [],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Whisky Community",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": "https://www.codeweavers.com/compatibility/crossover/marvel-s-spider-man-miles-morales"
       }
     },
     {

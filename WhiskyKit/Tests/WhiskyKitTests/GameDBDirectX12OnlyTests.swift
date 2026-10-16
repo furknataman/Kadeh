@@ -32,12 +32,17 @@ struct GameDBDirectX12OnlyTests {
     static let directX12OnlyEntryIds: Set<String> = [
         "animal-well",
         "cyberpunk-2077",
+        "god-of-war-ragnarok",
+        "gta-v-enhanced",
         "horizon-forbidden-west",
         "horizon-zero-dawn",
         "jusant",
         "monster-hunter-wilds",
         "persona-3-reload",
         "red-dead-redemption-2",
+        "spider-man-2",
+        "spider-man-miles-morales",
+        "spider-man-remastered",
         "starfield",
         "street-fighter-6",
         "talos-principle-2"
