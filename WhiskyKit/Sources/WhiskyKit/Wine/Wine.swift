@@ -444,6 +444,7 @@ public class Wine {
         // before the program starts, since a process reads the aliases once, and
         // like every Wine process it reconciles the user profile before starting.
         await syncCJKFontReplacements(bottle: bottle, importer: importer)
+        await syncControllerBus(bottle: bottle, importer: importer)
 
         // The effective backend for this launch: a program-level override wins
         // over the bottle setting, and `.recommended` resolves to its concrete
