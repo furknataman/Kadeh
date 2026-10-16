@@ -366,6 +366,8 @@ public struct GameDBEntry: Codable, Sendable, Equatable {
     public let knownIssues: [KnownIssue]?
     /// Provenance metadata (source, author, last updated).
     public let provenance: Provenance?
+    /// Known Turkish translation patches for this game.
+    public let turkishPatches: [TurkishPatch]?
 
     /// The default configuration variant for this entry.
     ///
@@ -392,7 +394,8 @@ public struct GameDBEntry: Codable, Sendable, Equatable {
         variants: [GameConfigVariant],
         notes: [String]? = nil,
         knownIssues: [KnownIssue]? = nil,
-        provenance: Provenance? = nil
+        provenance: Provenance? = nil,
+        turkishPatches: [TurkishPatch]? = nil
     ) {
         self.id = id
         self.title = title
@@ -410,6 +413,7 @@ public struct GameDBEntry: Codable, Sendable, Equatable {
         self.notes = notes
         self.knownIssues = knownIssues
         self.provenance = provenance
+        self.turkishPatches = turkishPatches
     }
 
     public init(from decoder: Decoder) throws {
@@ -433,6 +437,7 @@ public struct GameDBEntry: Codable, Sendable, Equatable {
         self.notes = try container.decodeIfPresent([String].self, forKey: .notes)
         self.knownIssues = try container.decodeIfPresent([KnownIssue].self, forKey: .knownIssues)
         self.provenance = try container.decodeIfPresent(Provenance.self, forKey: .provenance)
+        self.turkishPatches = try container.decodeIfPresent([TurkishPatch].self, forKey: .turkishPatches)
     }
 }
 

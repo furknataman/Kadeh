@@ -3178,7 +3178,50 @@
         "author": "Whisky Community",
         "lastUpdated": "2026-10-16T00:00:00Z",
         "referenceURL": "https://www.applegamingwiki.com/wiki/Marvel%E2%80%99s_Spider-Man_Remastered"
-      }
+      },
+      "turkishPatches": [
+        {
+          "id": "turkceyama-calypso",
+          "source": "turkceyama.com",
+          "pageURL": "https://turkceyama.com/marvels-spider-man-remastered-turkce-yama",
+          "translator": "Calypso (Emre Merev)",
+          "kind": "Düzenlenmiş makine çevirisi",
+          "access": "free",
+          "note": "Yükleyici 2023 tarihli; Kadeh kurulumdan sonra toc dosyasını oyunun güncel sürümüne uyarlar.",
+          "file": {
+            "name": "marvels-spider-man-remastered-turkce-yama_Kurulum.zip",
+            "size": 14357728,
+            "sha256": "a30611ad9acc9de1b6567f50378fb8cccbe66f5f1e56ea3e34bf1962386c09b3"
+          },
+          "installer": "Spiderman Remastered Türkçe Yama/Spiderman Remastered Türkçe Yama.exe",
+          "modifiedFiles": [
+            "asset_archive/toc"
+          ],
+          "addedFiles": [
+            "asset_archive/calypso.SMTR",
+            "asset_archive/toc.yedek",
+            "SpidermanRemastered_YamaKaldır.exe"
+          ],
+          "fixup": "spiderManTocMerge"
+        },
+        {
+          "id": "apex",
+          "source": "apexyama.com",
+          "pageURL": "https://apexyama.com/turkce-yamalar/marvel-s-spider-man-remastered",
+          "translator": "Apex",
+          "kind": "İnsan çevirisi",
+          "access": "account",
+          "note": "v1.1 (2 Nisan 2026). Apex web uygulaması ya da masaüstü uygulamasıyla indiriliyor."
+        },
+        {
+          "id": "anonymous-ceviri",
+          "source": "anonymousceviri.com",
+          "pageURL": "https://www.anonymousceviri.com/marvels-spider-man-remastered-turkce-yama",
+          "translator": "Anonymous Çeviri",
+          "access": "paid",
+          "note": "Üyelik (199 TL'den başlıyor) ve kendi Windows istemcisi gerekiyor."
+        }
+      ]
     },
     {
       "id": "spider-man-miles-morales",
