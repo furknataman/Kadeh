@@ -92,14 +92,27 @@ public enum SpiderManToc {
         guard bytes.count > 8 else { throw MergeError.corrupt }
         let rawSize = Int(readU32(toc, 4))
         guard rawSize > 0, rawSize < 1 << 30 else { throw MergeError.corrupt }
+        // The game's own toc ends its zlib stream without the final block and
+        // checksum, which `uncompress` rejects. Inflate it as a stream and accept
+        // it once the header's size has come out, as Python's decompressobj does.
         var dest = [UInt8](repeating: 0, count: rawSize)
-        var destLen = uLongf(rawSize)
+        var stream = z_stream()
+        guard inflateInit_(&stream, ZLIB_VERSION, Int32(MemoryLayout<z_stream>.size)) == Z_OK else {
+            throw MergeError.corrupt
+        }
+        defer { inflateEnd(&stream) }
         let status = bytes.withUnsafeBufferPointer { src in
             dest.withUnsafeMutableBufferPointer { dst in
-                uncompress(dst.baseAddress, &destLen, src.baseAddress! + 8, uLong(bytes.count - 8))
+                stream.next_in = UnsafeMutablePointer(mutating: src.baseAddress! + 8)
+                stream.avail_in = uInt(bytes.count - 8)
+                stream.next_out = dst.baseAddress
+                stream.avail_out = uInt(rawSize)
+                return inflate(&stream, Z_FINISH)
             }
         }
-        guard status == Z_OK, Int(destLen) == rawSize else { throw MergeError.corrupt }
+        guard [Z_STREAM_END, Z_OK, Z_BUF_ERROR].contains(status), Int(stream.total_out) == rawSize else {
+            throw MergeError.corrupt
+        }
         return Data(dest)
     }
 

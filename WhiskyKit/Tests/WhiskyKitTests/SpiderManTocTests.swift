@@ -99,6 +99,13 @@ final class SpiderManTocTests: XCTestCase {
         XCTAssertEqual(try SpiderManToc.decode(SpiderManToc.encode(raw)), raw)
     }
 
+    /// The game ships its toc without the stream's final checksum.
+    func testDecodeAcceptsUnterminatedStream() throws {
+        let raw = makeRaw(archives: 2, entries: [(0, 10), (1, 20)], extra: Data([1, 2, 3]))
+        let toc = try SpiderManToc.encode(raw).dropLast(4)
+        XCTAssertEqual(try SpiderManToc.decode(Data(toc)), raw)
+    }
+
     func testMergeTakesOnlyNewArchiveEntries() throws {
         let original = try makeToc(archives: 2, entries: [(0, 10), (1, 20), (1, 30)], extra: Data([9]))
         let patched = try makeToc(archives: 3, entries: [(0, 99), (2, 0), (1, 77)], extra: Data([9]))
