@@ -5837,6 +5837,72 @@
       }
     },
     {
+      "id": "trine-4",
+      "title": "Trine 4: The Nightmare Prince",
+      "aliases": [
+        "Trine 4"
+      ],
+      "subtitle": "Frozenbyte / Modus Games",
+      "store": "steam",
+      "steamAppId": 690640,
+      "rating": "works",
+      "exeNames": [
+        "trine4_game.exe"
+      ],
+      "pathPatterns": [
+        "trine 4 the nightmare prince"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "dxmt",
+          "label": "DXMT",
+          "isDefault": true,
+          "whenToUse": "Default; D3DMetal hangs on the loading screen",
+          "rationale": [
+            "D3DMetal freezes on the first loading screen; DXMT gets past it and runs at 120 FPS without crashes",
+            "Only the backend differs from the bottle defaults, matching the tested setup"
+          ],
+          "settings": {
+            "graphicsBackend": "dxmt"
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [],
+          "testedWith": {
+            "lastTestedAt": "2026-10-16T00:00:00Z",
+            "macOSVersion": "27.0.1",
+            "wineVersion": "10.0",
+            "whiskyVersion": "3.7.0",
+            "cpuArchitecture": "arm64"
+          }
+        }
+      ],
+      "notes": [
+        "trine4.exe is the launcher; the settings apply to trine4_game.exe"
+      ],
+      "knownIssues": [
+        {
+          "description": "Freezes on the loading screen with D3DMetal",
+          "severity": "major",
+          "workaround": "Use the DXMT variant (default)"
+        }
+      ],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Kadeh",
+        "lastUpdated": "2026-10-16T00:00:00Z",
+        "referenceURL": null
+      }
+    },
+    {
       "id": "turtle-wow",
       "title": "Turtle WoW",
       "aliases": [],
