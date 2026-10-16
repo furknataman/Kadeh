@@ -120,11 +120,43 @@ final class GameApplicatorTests: XCTestCase {
         let variant = makeTestVariant(graphicsBackend: .d3dMetal, dxvk: false)
         let entry = makeTestEntry(variant: variant)
 
-        _ = try GameConfigApplicator.apply(entry: entry, variant: variant, to: bottle)
+        _ = try GameConfigApplicator.apply(
+            entry: entry, variant: variant, to: bottle, isBackendAvailable: { _ in true }
+        )
 
         XCTAssertEqual(bottle.settings.graphicsBackend, .d3dMetal)
-        let changes = GameConfigApplicator.previewChanges(variant: variant, bottle: bottle)
+        let changes = GameConfigApplicator.previewChanges(
+            variant: variant, bottle: bottle, isBackendAvailable: { _ in true }
+        )
         XCTAssertFalse(changes.contains { $0.settingName == "DXVK" }, "no DXVK row when the backend is explicit")
+    }
+
+    @MainActor
+    func testUnavailableBackendFallsBackToRecommended() throws {
+        let bottle = try makeTestBottle()
+        defer { cleanupBottle(bottle) }
+
+        // Without the GPTK payload a d3dMetal bottle silently runs on wined3d,
+        // so the entry gets Recommended, which resolves by availability.
+        let variant = makeTestVariant(graphicsBackend: .d3dMetal, dxvk: false)
+        let noD3DMetal: (GraphicsBackend) -> Bool = { $0 != .d3dMetal }
+
+        // The bottle starts on Recommended, so nothing changes, but the
+        // preview still has to say why the entry's backend was not applied.
+        let changes = GameConfigApplicator.previewChanges(
+            variant: variant, bottle: bottle, isBackendAvailable: noD3DMetal
+        )
+        let backendChange = changes.first { $0.settingName == "Graphics Backend" }
+        XCTAssertEqual(
+            backendChange?.newValue,
+            "\(GraphicsBackend.recommended.displayName) (\(GraphicsBackend.d3dMetal.displayName) not installed)"
+        )
+
+        bottle.settings.graphicsBackend = .dxvk
+        _ = try GameConfigApplicator.apply(
+            entry: makeTestEntry(variant: variant), variant: variant, to: bottle, isBackendAvailable: noD3DMetal
+        )
+        XCTAssertEqual(bottle.settings.graphicsBackend, .recommended)
     }
 
     // MARK: - Test 2: Apply Mutates Bottle Settings

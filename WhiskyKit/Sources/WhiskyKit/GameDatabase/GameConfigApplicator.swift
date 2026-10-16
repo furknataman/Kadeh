@@ -91,6 +91,8 @@ public enum GameConfigApplicator {
     ///   - variant: The specific variant to apply.
     ///   - bottle: The target bottle whose settings will be mutated.
     ///   - programURL: Optional program URL for program-level settings snapshot.
+    ///   - isBackendAvailable: Whether a backend can run on this machine. A
+    ///     requested backend that can't falls back to Recommended.
     /// - Returns: The snapshot created before applying changes.
     /// - Throws: An error if the snapshot cannot be encoded or saved.
     @MainActor
@@ -98,7 +100,8 @@ public enum GameConfigApplicator {
         entry: GameDBEntry,
         variant: GameConfigVariant,
         to bottle: Bottle,
-        programURL: URL? = nil
+        programURL: URL? = nil,
+        isBackendAvailable: (GraphicsBackend) -> Bool = WhiskyWineInstaller.isBackendAvailable
     ) throws -> GameConfigSnapshot {
         // 1. Snapshot current state
         let encoder = PropertyListEncoder()
@@ -125,7 +128,7 @@ public enum GameConfigApplicator {
         }
 
         // 3. Apply variant settings to bottle
-        applyVariantSettings(variant.settings, to: bottle)
+        applyVariantSettings(variant.settings, to: bottle, isBackendAvailable: isBackendAvailable)
 
         // 4. Apply DLL overrides (deduplicate by DLL name, prefer variant value)
         if let overrides = variant.dllOverrides, !overrides.isEmpty {
@@ -207,24 +210,34 @@ public enum GameConfigApplicator {
     /// - Parameters:
     ///   - variant: The variant to preview.
     ///   - bottle: The bottle whose current settings are compared.
+    ///   - isBackendAvailable: Whether a backend can run on this machine; see
+    ///     ``apply(entry:variant:to:programURL:isBackendAvailable:)``.
     /// - Returns: An array of changes, with high-impact changes flagged.
     @MainActor
     public static func previewChanges(
         variant: GameConfigVariant,
-        bottle: Bottle
+        bottle: Bottle,
+        isBackendAvailable: (GraphicsBackend) -> Bool = WhiskyWineInstaller.isBackendAvailable
     ) -> [ConfigChange] {
         var changes: [ConfigChange] = []
         let settings = variant.settings
 
-        // Graphics settings
-        if let backend = settings.graphicsBackend, backend != bottle.settings.graphicsBackend {
-            changes.append(ConfigChange(
-                category: "Graphics",
-                settingName: "Graphics Backend",
-                currentValue: bottle.settings.graphicsBackend.displayName,
-                newValue: backend.displayName,
-                isHighImpact: true
-            ))
+        // Graphics settings. A fallback always gets a row, even when the bottle
+        // is already on Recommended, so the user sees why the entry's backend
+        // was not applied.
+        if let requested = settings.graphicsBackend {
+            let backend = effectiveBackend(requested, isBackendAvailable: isBackendAvailable)
+            if backend != requested || backend != bottle.settings.graphicsBackend {
+                changes.append(ConfigChange(
+                    category: "Graphics",
+                    settingName: "Graphics Backend",
+                    currentValue: bottle.settings.graphicsBackend.displayName,
+                    newValue: backend == requested
+                        ? backend.displayName
+                        : "\(backend.displayName) (\(requested.displayName) not installed)",
+                    isHighImpact: true
+                ))
+            }
         }
 
         if settings.graphicsBackend == nil, let dxvk = settings.dxvk, dxvk != bottle.settings.dxvk {
@@ -339,13 +352,19 @@ public enum GameConfigApplicator {
 
     /// Applies variant settings to the bottle's settings.
     @MainActor
-    private static func applyVariantSettings(_ settings: GameConfigVariantSettings, to bottle: Bottle) {
+    private static func applyVariantSettings(
+        _ settings: GameConfigVariantSettings,
+        to bottle: Bottle,
+        isBackendAvailable: (GraphicsBackend) -> Bool
+    ) {
         // `dxvk` is the legacy backend switch: its setter maps `false` back to
         // Recommended, so applying it after an explicit backend undid the
         // backend. An explicit backend wins; `dxvk` only speaks when there is
         // none.
         if let graphicsBackend = settings.graphicsBackend {
-            bottle.settings.graphicsBackend = graphicsBackend
+            bottle.settings.graphicsBackend = effectiveBackend(
+                graphicsBackend, isBackendAvailable: isBackendAvailable
+            )
         } else if let dxvk = settings.dxvk {
             bottle.settings.dxvk = dxvk
         }
@@ -365,6 +384,17 @@ public enum GameConfigApplicator {
         if let avxEnabled = settings.avxEnabled {
             bottle.settings.avxEnabled = avxEnabled
         }
+    }
+
+    /// The backend a variant actually gets. Entries may ask for a backend whose
+    /// payload isn't installed (D3DMetal needs an imported GPTK), which would
+    /// silently run on wined3d (issue #146); Recommended instead resolves to
+    /// the best backend that is installed.
+    private static func effectiveBackend(
+        _ requested: GraphicsBackend,
+        isBackendAvailable: (GraphicsBackend) -> Bool
+    ) -> GraphicsBackend {
+        isBackendAvailable(requested) ? requested : .recommended
     }
 
     /// Appends DLL overrides to the bottle, deduplicating by DLL name (variant value wins).
