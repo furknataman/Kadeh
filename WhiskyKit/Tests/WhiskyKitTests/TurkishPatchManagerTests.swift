@@ -168,6 +168,37 @@ final class TurkishPatchManagerTests: XCTestCase {
         XCTAssertEqual(TurkishPatchManager.status(of: patch, gameURL: game), .notInstalled)
     }
 
+    func testStageRefusesWhenInstalled() throws {
+        let (archive, file) = try makeArchive()
+        try write("original", to: "data/main.bin", in: game)
+        let patch = makePatch(file: file)
+        _ = try TurkishPatchManager.stage(patch, archive: archive, gameURL: game, bottleURL: bottle)
+        try simulateInstaller()
+        try TurkishPatchManager.finish(patch, gameURL: game, bottleURL: bottle, fileSHA256: file.sha256)
+        XCTAssertThrowsError(
+            try TurkishPatchManager.stage(patch, archive: archive, gameURL: game, bottleURL: bottle)
+        ) {
+            XCTAssertEqual($0 as? TurkishPatchError, .alreadyInstalled)
+        }
+        try TurkishPatchManager.uninstall(patch, gameURL: game)
+        XCTAssertEqual(read("data/main.bin"), "original")
+    }
+
+    /// The installer ran but the user never pressed "Yükleyici bitti": staging
+    /// again must not back up the files the installer already overwrote.
+    func testRestageKeepsUnfinishedBackup() throws {
+        let (archive, file) = try makeArchive()
+        try write("original", to: "data/main.bin", in: game)
+        let patch = makePatch(file: file)
+        _ = try TurkishPatchManager.stage(patch, archive: archive, gameURL: game, bottleURL: bottle)
+        try simulateInstaller()
+        _ = try TurkishPatchManager.stage(patch, archive: archive, gameURL: game, bottleURL: bottle)
+        try simulateInstaller()
+        try TurkishPatchManager.finish(patch, gameURL: game, bottleURL: bottle, fileSHA256: file.sha256)
+        try TurkishPatchManager.uninstall(patch, gameURL: game)
+        XCTAssertEqual(read("data/main.bin"), "original")
+    }
+
     func testFinishRollsBackWhenAddedFilesMissing() throws {
         let (archive, file) = try makeArchive()
         try write("original", to: "data/main.bin", in: game)

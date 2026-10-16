@@ -44,6 +44,7 @@ public struct TurkishPatchState: Codable, Equatable {
 /// Errors raised while installing or removing a Turkish patch.
 public enum TurkishPatchError: LocalizedError, Equatable {
     case notInstallable
+    case alreadyInstalled
     case hashMismatch(expected: String, actual: String)
     case extractFailed(String)
     case installerMissing(String)
@@ -54,6 +55,8 @@ public enum TurkishPatchError: LocalizedError, Equatable {
         switch self {
         case .notInstallable:
             return "Bu yama Kadeh ile kurulamaz."
+        case .alreadyInstalled:
+            return "Bu yama zaten kurulu."
         case .hashMismatch:
             return "İndirilen dosya beklenen dosya değil (SHA-256 eşleşmedi)."
         case .extractFailed(let detail):
@@ -143,6 +146,9 @@ public enum TurkishPatchManager {
         guard patch.isInstallable, let file = patch.file, let installer = patch.installer else {
             throw TurkishPatchError.notInstallable
         }
+        guard status(of: patch, gameURL: gameURL) != .installed else {
+            throw TurkishPatchError.alreadyInstalled
+        }
         let actual = try sha256(of: archive)
         guard actual == file.sha256.lowercased() else {
             throw TurkishPatchError.hashMismatch(expected: file.sha256, actual: actual)
@@ -207,8 +213,15 @@ public enum TurkishPatchManager {
     /// Starts from a fresh `.kadeh-yama/<id>` so the backup always reflects the files the installer is about to change.
     private static func backUp(_ patch: TurkishPatch, gameURL: URL) throws {
         let fileManager = FileManager.default
-        try? fileManager.removeItem(at: patchDir(patch, gameURL: gameURL))
         let backup = backupDir(patch, gameURL: gameURL)
+        // A backup without state.json is from an install that never reached `finish`.
+        // The installer may already have overwritten the game's files by then, so that
+        // backup is the only clean copy left: keep it rather than back up patched files.
+        if fileManager.fileExists(atPath: backup.path),
+           !fileManager.fileExists(atPath: stateURL(patch, gameURL: gameURL).path) {
+            return
+        }
+        try? fileManager.removeItem(at: patchDir(patch, gameURL: gameURL))
         try fileManager.createDirectory(at: backup, withIntermediateDirectories: true)
         for relative in patch.modifiedFiles {
             let source = gameURL.appendingPathComponent(relative)
