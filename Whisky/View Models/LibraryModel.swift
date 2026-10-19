@@ -395,18 +395,10 @@ extension LibraryModel {
     private func launchProgram(at url: URL, in bottle: Bottle, useTerminal: Bool) {
         // Through the bottle's own program list where possible, so the launch
         // picks up that program's overrides rather than only the bottle's.
-        guard let program = bottle.programs.first(where: { $0.url == url }) else {
-            programLaunching.insert(url)
-            Task {
-                defer { programLaunching.remove(url) }
-                do {
-                    try await Wine.runProgram(at: url, bottle: bottle)
-                } catch {
-                    launchError = error.localizedDescription
-                }
-            }
-            return
-        }
+        // A program outside the scanned folders (`C:\Games\…`) is not in that
+        // list; it still gets its own settings, or it launches on the bottle's
+        // renderer instead of the one set for it.
+        let program = bottle.programs.first(where: { $0.url == url }) ?? Program(url: url, bottle: bottle)
 
         programLaunching.insert(url)
         Telemetry.capture(.firstProgramLaunchAttempted)
