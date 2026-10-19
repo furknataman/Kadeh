@@ -43,15 +43,31 @@ enum WineControllerBus {
         ("DisableInput", "dword:00000001")
     ]
 
-    /// Whether the runtime's `Wine/lib` lacks the SDL that winebus loads by
-    /// name. The 4.x runtimes ship none, and their winebus cannot use one
-    /// anyway. A runtime without `Wine/lib` is a layout this check does not
-    /// know, so it is left alone.
-    static func runtimeLacksSDL(libraryFolder: URL = WhiskyWineInstaller.libraryFolder) -> Bool {
-        let lib = libraryFolder.appending(path: "Wine/lib")
+    /// Where a runtime keeps the SDL library winebus loads, for each layout
+    /// this knows: WhiskyWine's `Wine/lib`, and the overlay runtime's `frameworks`.
+    private static func sdlLocations(libraryFolder: URL) -> (folder: URL, library: URL)? {
         let manager = FileManager.default
-        return manager.fileExists(atPath: lib.path(percentEncoded: false))
-            && !manager.fileExists(atPath: lib.appending(path: "libSDL2-2.0.0.dylib").path(percentEncoded: false))
+        let candidates = ["Wine/lib", "frameworks"].map { libraryFolder.appending(path: $0) }
+        for folder in candidates where manager.fileExists(atPath: folder.path(percentEncoded: false)) {
+            return (folder, folder.appending(path: "libSDL2-2.0.0.dylib"))
+        }
+        return nil
+    }
+
+    /// Whether the runtime's library folder lacks the SDL that winebus loads
+    /// by name. The 4.x runtimes ship none, and their winebus cannot use one
+    /// anyway. A runtime with neither a `Wine/lib` nor a `frameworks` folder is
+    /// a layout this check does not know, so it is left alone.
+    static func runtimeLacksSDL(libraryFolder: URL = WhiskyWineInstaller.libraryFolder) -> Bool {
+        guard let location = sdlLocations(libraryFolder: libraryFolder) else { return false }
+        return !FileManager.default.fileExists(atPath: location.library.path(percentEncoded: false))
+    }
+
+    /// Whether the runtime is known to ship SDL: the opposite of
+    /// ``runtimeLacksSDL(libraryFolder:)``, except that an unknown layout
+    /// counts as having none.
+    static func runtimeHasSDL(libraryFolder: URL = WhiskyWineInstaller.libraryFolder) -> Bool {
+        sdlLocations(libraryFolder: libraryFolder) != nil && !runtimeLacksSDL(libraryFolder: libraryFolder)
     }
 
     /// Whether a bottle still needs the options, read from its prefix without
@@ -101,6 +117,109 @@ extension Wine {
             logger.info("Moved gamepads to the IOHID bus for '\(bottle.settings.name)': the runtime has no SDL")
         } catch {
             logger.error("Controller bus sync failed for '\(bottle.settings.name)': \(error.localizedDescription)")
+        }
+    }
+}
+
+/// Presents Sony gamepads to games as XInput pads.
+///
+/// Wine's winebus gives a DualShock 4 or DualSense to games as a raw HID device
+/// and drops the SDL (XInput) copy, so a game that only reads XInput sees no
+/// controller. Wine 10's only switch for this is the global `DisableHidraw`
+/// bus option: set, winebus does not start its IOHID bus at all and every pad
+/// comes through SDL, Sony pads as XInput ones. Because it is global, other
+/// special controllers (steering wheels, flight sticks) can be affected too.
+///
+/// It needs SDL: without it winebus keeps the raw copy on purpose (see
+/// ``WineControllerBus``), and `DisableHidraw` would remove every pad.
+public enum WinePlayStationPads {
+    /// Whether the installed runtime can show Sony pads as Xbox pads: only one that ships SDL can.
+    public static var isSupported: Bool { WineControllerBus.runtimeHasSDL() }
+
+    static let valueName = "DisableHidraw"
+    static let valueData = "dword:00000001"
+
+    /// Whether the saved registry still has ``WineControllerBus``'s SDL-off
+    /// and input-off values from an earlier runtime without SDL. With
+    /// `DisableHidraw` as well, no bus keeps the pad and it vanishes.
+    static func hasLeftovers(bottleURL: URL) -> Bool {
+        WineControllerBus.values.contains {
+            WineRegistryFile.readValue(
+                bottleURL: bottleURL, key: WineControllerBus.savedKey, valueName: $0.name
+            ) == $0.data
+        }
+    }
+
+    /// Whether the saved registry differs from what a bottle wants, read from
+    /// `system.reg` without starting Wine. Never before that file exists.
+    ///
+    /// - Parameters:
+    ///   - enabled: Whether the bottle asks for Sony pads as Xbox pads. When
+    ///     on, leftovers from an SDL-less runtime count as a difference; when
+    ///     off they are left as they are.
+    ///   - runtimeHasSDL: Without SDL the value is unwanted whatever the
+    ///     setting says, so a bottle that has it from an earlier runtime
+    ///     gets it removed.
+    static func needsSync(enabled: Bool, runtimeHasSDL: Bool, bottleURL: URL) -> Bool {
+        let systemReg = bottleURL.appending(path: "system.reg")
+        guard FileManager.default.fileExists(atPath: systemReg.path(percentEncoded: false)) else { return false }
+        let saved = WineRegistryFile.readValue(
+            bottleURL: bottleURL, key: WineControllerBus.savedKey, valueName: valueName
+        )
+        if enabled && runtimeHasSDL {
+            return saved != valueData || hasLeftovers(bottleURL: bottleURL)
+        }
+        return saved != nil
+    }
+
+    /// The `.reg` document that sets (`enabled`) or removes the value. When
+    /// setting it, `removingLeftovers` also deletes the SDL-off and input-off
+    /// values, which would otherwise hide every pad.
+    static func registryDocument(enabled: Bool, removingLeftovers: Bool = false) -> String {
+        var lines = [
+            "Windows Registry Editor Version 5.00", "",
+            "[\(WineControllerBus.registryKey)]",
+            enabled ? "\"\(valueName)\"=\(valueData)" : "\"\(valueName)\"=-"
+        ]
+        if enabled && removingLeftovers {
+            lines += WineControllerBus.values.map { "\"\($0.name)\"=-" }
+        }
+        lines.append("")
+        return lines.joined(separator: "\r\n")
+    }
+}
+
+extension Wine {
+    /// Brings a bottle's `DisableHidraw` value in line with ``BottleSettings/playStationAsXbox``.
+    ///
+    /// Imports only when the saved state differs, so a launch with nothing to
+    /// change costs a read of `system.reg`. winebus reads the option when the
+    /// prefix starts, so a change applies from its next start. It never
+    /// restarts a wineserver (that would kill a running game) and never fails
+    /// a launch.
+    @MainActor
+    static func syncPlayStationPads(
+        bottle: Bottle,
+        runtimeHasSDL: Bool = WineControllerBus.runtimeHasSDL(),
+        importer: RegistryImporter = { try await importRegistry(document: $0, bottle: $1) }
+    ) async {
+        let enabled = bottle.settings.playStationAsXbox
+        let bottleURL = bottle.url
+        let (needed, leftovers) = await Task.detached(priority: .userInitiated) {
+            (
+                WinePlayStationPads.needsSync(enabled: enabled, runtimeHasSDL: runtimeHasSDL, bottleURL: bottleURL),
+                enabled && runtimeHasSDL && WinePlayStationPads.hasLeftovers(bottleURL: bottleURL)
+            )
+        }.value
+        guard needed else { return }
+
+        let wanted = enabled && runtimeHasSDL
+        do {
+            let document = WinePlayStationPads.registryDocument(enabled: wanted, removingLeftovers: leftovers)
+            try await importer(document, bottle)
+            logger.info("PlayStation pads for '\(bottle.settings.name)': \(wanted ? "Xbox" : "native")")
+        } catch {
+            logger.error("PlayStation pad sync failed for '\(bottle.settings.name)': \(error.localizedDescription)")
         }
     }
 }

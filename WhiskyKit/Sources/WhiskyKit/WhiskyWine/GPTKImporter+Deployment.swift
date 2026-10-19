@@ -164,7 +164,14 @@ extension GPTKImporter {
     }
 
     /// Testable seam for ``deployStoredPayload()``.
+    ///
+    /// An ``OverlayRuntime`` is left alone: it carries its own D3DMetal, and a
+    /// `Wine/lib` tree written into it would only flip ``isDeployed()``.
     static func deploy(fromStore store: URL, intoLibraryFolder folder: URL) throws {
+        guard OverlayRuntime(libraryFolder: folder) == nil else {
+            logger.info("Left the GPTK payload undeployed: the overlay runtime carries its own D3DMetal")
+            return
+        }
         guard storedRecord(inStore: store) != nil else {
             throw GPTKImportError.storeEmpty
         }

@@ -57,6 +57,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             try? await Task.sleep(for: .seconds(2))
             await self.sweepOrphanProcesses()
         }
+
+        PerformanceOverlayPanel.shared.start()
     }
 
     /// The "Terminate Wine processes when Whisky closes" setting.
@@ -156,7 +158,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Bundle.main.resourceURL?.deletingLastPathComponent().deletingLastPathComponent()
     }
 
-    private static let expectedUrl = URL(fileURLWithPath: "/Applications/Whisky.app")
+    private static let expectedUrl = URL(fileURLWithPath: "/Applications/Kadeh.app")
 
     private static var insideAppsFolder: Bool {
         if let url = appUrl {

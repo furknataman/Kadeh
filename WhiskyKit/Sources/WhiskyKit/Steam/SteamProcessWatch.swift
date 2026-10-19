@@ -59,6 +59,21 @@ public struct SteamProcessWatch: Sendable {
         return false
     }
 
+    /// Polls until none of `names` is running, with no deadline: a game session
+    /// lasts as long as it lasts.
+    ///
+    /// Returns `true` once they are all gone and `false` on cancellation, so a
+    /// caller can tell an ended session from one it stopped watching.
+    public func waitForNone(of names: Set<String>) async -> Bool {
+        while !Task.isCancelled {
+            if await runningImageNames().isDisjoint(with: names) {
+                return true
+            }
+            try? await Task.sleep(for: pollInterval)
+        }
+        return false
+    }
+
     /// The keys whose executable-name sets intersect the running processes.
     ///
     /// Used to mark which games are currently running, keyed by App ID.

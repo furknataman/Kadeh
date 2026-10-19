@@ -123,9 +123,9 @@ final class ProgramPrefixBootstrapTests {
         #expect(writes.first?.contains { $0.scope == .program("Game.exe") } == true)
         let contents = try String(contentsOf: script, encoding: .utf8)
         #expect(contents.hasPrefix("#!/bin/bash\n"))
-        #expect(contents.contains(
-            "env -u WINEDLLOVERRIDES \(Wine.wineBinary.esc) start /unix \(program.url.esc) -windowed"
-        ))
+        // On an overlay runtime its DYLD_ variables sit between the two, as `env`'s own.
+        #expect(contents.contains("env -u WINEDLLOVERRIDES "))
+        #expect(contents.contains("\(Wine.wineBinary.esc) start /unix \(program.url.esc) -windowed\n"))
         let permissions = try FileManager.default.attributesOfItem(atPath: script.path)[.posixPermissions] as? Int
         #expect(permissions == 0o755)
     }

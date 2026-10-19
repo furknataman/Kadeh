@@ -44,14 +44,21 @@ public enum GraphicsBackendResolver {
     ///     to checking the installed runtime.
     ///   - dxmtRuntimeNative: Whether the runtime's DXMT payload is the native
     ///     variant. Defaults to checking the installed runtime.
+    ///   - overlayRuntime: The installed ``OverlayRuntime``, if that is the layout
+    ///     installed. It answers on its own (see
+    ///     ``OverlayRuntime/recommendedBackend(for:)``): launchers get DXMT there.
     /// - Returns: A concrete ``GraphicsBackend`` (never `.recommended`).
     public static func resolve(
         for launcher: LauncherType? = nil,
         macOSVersion: MacOSVersion = .current,
         runtimeInfo: WhiskyWineVersion? = WhiskyWineInstaller.whiskyWineInfo(),
         d3dMetalInstalled: Bool = WhiskyWineInstaller.isD3DMetalInstalled(),
-        dxmtRuntimeNative: Bool = Wine.isDXMTRuntimeNative()
+        dxmtRuntimeNative: Bool = Wine.isDXMTRuntimeNative(),
+        overlayRuntime: OverlayRuntime? = .installed
     ) -> GraphicsBackend {
+        if let overlayRuntime {
+            return overlayRuntime.recommendedBackend(for: launcher)
+        }
         // Launcher clients are Chromium and cannot render on D3DMetal or DXMT:
         // the CEF gpu process fails to create its window swapchain and the
         // client shows no window (or a black one). DXVK is the one backend
@@ -76,6 +83,16 @@ public enum GraphicsBackendResolver {
             return .dxmt
         }
         return .dxvk
+    }
+
+    /// The concrete backend a setting runs on: the setting itself, or what
+    /// `.recommended` resolves to here. For callers that only need the answer
+    /// and not the launch's other steering (launchers, descendants).
+    public static func concrete(
+        _ choice: GraphicsBackend,
+        overlayRuntime: OverlayRuntime? = .installed
+    ) -> GraphicsBackend {
+        choice == .recommended ? resolve(overlayRuntime: overlayRuntime) : choice
     }
 
     /// Returns a localized explanation for the recommended backend choice.

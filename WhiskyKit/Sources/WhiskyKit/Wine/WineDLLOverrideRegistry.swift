@@ -107,6 +107,16 @@ public extension Wine {
     ///   bottle; `nil` asks ``GraphicsBackendResolver``.
     /// - Parameter builtinD3D12IsD3DMetal: Whether the runtime's builtin `d3d12`
     ///   is D3DMetal's, passed on to every composition written here.
+    /// - Parameter gameDB: The GameDB entries that decide which Steam games run
+    ///   on DXMT; `nil` reads the bundled database.
+    /// - Parameter dxmtPayloadRoot: Where the DXMT files placed next to those
+    ///   games come from.
+    /// - Parameter descendantBackend: The backend the launched game's plan
+    ///   resolves to, which decides DXMT for its executables over the GameDB's;
+    ///   `nil` leaves it to the GameDB and the user's settings.
+    /// - Parameter overlayRuntime: The installed ``OverlayRuntime``, if that is
+    ///   the layout installed. No DXMT is placed next to games there, since the
+    ///   environment selects it, and copies an earlier launch placed are taken back.
     /// - Parameter writer: What performs the registry write.
     @MainActor
     static func applyDLLOverrides(
@@ -118,17 +128,23 @@ public extension Wine {
         descendantLaunchers: [LauncherType] = [],
         recommendedBackend: GraphicsBackend? = nil,
         builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
+        gameDB: [GameDBEntry]? = nil,
+        dxmtPayloadRoot: URL = WhiskyWineInstaller.libraryFolder.appending(path: "DXMT"),
+        descendantBackend: GraphicsBackend? = nil,
+        overlayRuntime: OverlayRuntime? = .installed,
         writer: DLLOverrideWriter = { try await syncDLLOverrides(bottle: $0, scopes: $1) }
     ) async throws {
         let bottleOverrides = constructWineEnvironment(
-            for: bottle, recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal
+            for: bottle, recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+            overlayRuntime: overlayRuntime
         )["WINEDLLOVERRIDES"] ?? ""
         var scopes = DLLOverrideScopes(bottle: bottleOverrides)
         let launcher = LauncherType.detect(from: url)
         let launcherSet = { (userOverrides: ProgramOverrides?) in
             launcherDLLOverrides(
                 bottle: bottle, userOverrides: userOverrides,
-                recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal
+                recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+                overlayRuntime: overlayRuntime
             )
         }
 
@@ -170,6 +186,50 @@ public extension Wine {
             let own = launcherSet(steamExe.flatMap { Program.persistedOverrides(for: $0, bottleURL: bottle.url) })
             scopes.add(LauncherType.steam.helperExecutables, disablingNVAPI(in: own))
             scopes.add(["steam.exe"], own)
+            if overlayRuntime != nil {
+                // An earlier runtime's run of the installer left it the launcher
+                // set, natives forced; on the overlay layout that only reaches
+                // stale copies, so it gets this one instead.
+                scopes.add(["SteamSetup.exe"], own)
+            }
+        }
+
+        // Steam games on DXMT, whatever this launch is, since Steam's own Play
+        // button starts them without asking Whisky. System32 holds Steam's
+        // DXVK, so DXMT goes next to the game, and the game's entry is what
+        // selects it. A launched game's executables follow its plan, and their
+        // entry is that plan. NVIDIA's bridges are off: the ones in the prefix
+        // are D3DMetal's and cannot drive a DXMT device.
+        let launched = Set((gamePlan == nil ? [] : descendantExecutables).map { $0.lowercased() })
+        let dxmtCandidates = steamRoot == nil
+            ? [] : SteamLauncher.appLocalDXMTCandidates(bottle: bottle, entries: gameDB)
+        for (executable, overrides, isTarget) in dxmtCandidates {
+            let name = executable.lastPathComponent
+            let isLaunched = launched.contains(name.lowercased())
+            let backend = isLaunched ? (descendantBackend ?? overrides.graphicsBackend) : overrides.graphicsBackend
+            if isTarget, backend == .dxmt, overlayRuntime == nil {
+                do {
+                    try enableAppLocalDXMT(for: executable, prefixRoot: bottle.url, payloadRoot: dxmtPayloadRoot)
+                    let set = isLaunched ? (gamePlan ?? "") : constructWineEnvironment(
+                        for: bottle, programOverrides: overrides,
+                        recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+                        overlayRuntime: overlayRuntime
+                    )["WINEDLLOVERRIDES"] ?? ""
+                    scopes.add([name], disablingNVAPI(in: set))
+                    continue
+                } catch {
+                    dllOverrideLogger.warning(
+                        "No DXMT for \(name, privacy: .public): \(error.localizedDescription)"
+                    )
+                }
+            }
+            // Off DXMT, or it could not be placed: what an earlier launch
+            // placed goes, and so does the entry that selected it, rather than
+            // leave a DXMT set (d3d12 and nvapi off) on DXVK's files. A launched
+            // game's entry is its plan, written below.
+            if removeAppLocalDXMT(for: executable, payloadRoot: dxmtPayloadRoot), !isLaunched {
+                scopes.add([name], "")
+            }
         }
 
         // The game's plan, in the entries of the executables it runs as. After
@@ -211,7 +271,8 @@ public extension Wine {
     /// draw on D3DMetal or DXMT. Pinned rather than resolved, so it holds for a
     /// bottle on any backend, and it never goes into the bottle scope: that one
     /// is the games'. A backend the user picked for the launcher's executable
-    /// itself is kept, as a launch of it from the Programs tab would.
+    /// itself is kept, as a launch of it from the Programs tab would. On the
+    /// overlay runtime the pin is DXMT, whose set there forces nothing native.
     ///
     /// - Parameters:
     ///   - bottle: The bottle whose set to start from.
@@ -219,20 +280,23 @@ public extension Wine {
     ///     executable (its custom DLL overrides, say), if any.
     ///   - recommendedBackend: What `.recommended` resolves to for the bottle.
     ///   - builtinD3D12IsD3DMetal: Whether the runtime's builtin `d3d12` is D3DMetal's.
+    ///   - overlayRuntime: The installed ``OverlayRuntime``, if that is the layout installed.
     @MainActor
     static func launcherDLLOverrides(
         bottle: Bottle,
         userOverrides: ProgramOverrides? = nil,
         recommendedBackend: GraphicsBackend? = nil,
-        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed()
+        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
+        overlayRuntime: OverlayRuntime? = .installed
     ) -> String {
         var pinned = userOverrides ?? ProgramOverrides()
         if pinned.graphicsBackend == nil || pinned.graphicsBackend == .recommended {
-            pinned.graphicsBackend = .dxvk
+            pinned.graphicsBackend = overlayRuntime == nil ? .dxvk : .dxmt
         }
         return constructWineEnvironment(
             for: bottle, programOverrides: pinned,
-            recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal
+            recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+            overlayRuntime: overlayRuntime
         )["WINEDLLOVERRIDES"] ?? ""
     }
 

@@ -78,7 +78,7 @@ private let logger = Logger(subsystem: Bundle.whiskyBundleIdentifier, category: 
 /// - ``killBottle(bottle:)``
 /// - ``enableDXVK(bottle:)``
 /// - ``generateRunCommand(at:bottle:args:environment:)``
-/// - ``generateTerminalEnvironmentCommand(bottle:)``
+/// - ``generateTerminalEnvironmentCommand(bottle:overlayRuntime:)``
 public class Wine {
     /// URL to the installed DXVK folder containing Direct3D-to-Vulkan translation libraries.
     private static let dxvkFolder: URL = WhiskyWineInstaller.libraryFolder.appending(path: "DXVK")
@@ -88,10 +88,13 @@ public class Wine {
     /// The URL to the `wine64` binary executable.
     ///
     /// This is the main Wine binary used to execute Windows applications.
-    /// The binary is located within the WhiskyWine installation directory.
-    public static let wineBinary: URL = WhiskyWineInstaller.binFolder.appending(path: "wine64")
+    /// The binary is located within the WhiskyWine installation directory, or
+    /// is the `wine` loader of an installed ``OverlayRuntime``, which has no `wine64`.
+    public static var wineBinary: URL {
+        OverlayRuntime.installed?.wineBinary ?? WhiskyWineInstaller.binFolder.appending(path: "wine64")
+    }
     /// URL to the `wineserver` binary for Wine server management.
-    private static let wineserverBinary: URL = WhiskyWineInstaller.binFolder.appending(path: "wineserver")
+    private static var wineserverBinary: URL { WhiskyWineInstaller.binFolder.appending(path: "wineserver") }
 
     /// Run a process on a executable file given by the `executableURL`
     private static func runProcess(
@@ -102,7 +105,9 @@ public class Wine {
         process.executableURL = executableURL
         process.arguments = args
         process.currentDirectoryURL = directory ?? executableURL.deletingLastPathComponent()
-        process.environment = environment
+        // An overlay engine cannot even start without its dylib paths, and some
+        // spawns (`wine --version`) build no bottle environment to carry them.
+        process.environment = environment.merging(OverlayRuntime.installed?.baseEnvironment ?? [:]) { own, _ in own }
         process.qualityOfService = .userInitiated
 
         return try process.runStream(
@@ -422,6 +427,9 @@ public class Wine {
     ///     recorder, so they can see what a launch writes without running Wine.
     ///   - importer: What imports the CJK font aliases the prefix is missing. Tests pass a
     ///     recorder here too.
+    ///   - overlayRuntime: The installed ``OverlayRuntime``, if that is the layout installed.
+    ///     There no backend's files are copied into the prefix: the environment selects a
+    ///     builtin set, and native copies an earlier runtime left are cleared instead.
     /// - Returns: The environment and `wine64` arguments the launch runs with.
     /// - Throws: An error if a backend's files cannot be deployed or the DLL override import
     ///   cannot be started. A failed font alias import is only logged.
@@ -436,7 +444,8 @@ public class Wine {
         recommendedBackend: GraphicsBackend = GraphicsBackendResolver.resolve(),
         builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
         overrideWriter: DLLOverrideWriter = { try await syncDLLOverrides(bottle: $0, scopes: $1) },
-        importer: RegistryImporter = { try await importRegistry(document: $0, bottle: $1) }
+        importer: RegistryImporter = { try await importRegistry(document: $0, bottle: $1) },
+        overlayRuntime: OverlayRuntime? = .installed
     ) async throws -> PreparedLaunch {
         // Font aliases first, before any setting is read: their import can take
         // a few seconds, and a setting changed during it would leave this launch
@@ -445,6 +454,7 @@ public class Wine {
         // like every Wine process it reconciles the user profile before starting.
         await syncCJKFontReplacements(bottle: bottle, importer: importer)
         await syncControllerBus(bottle: bottle, importer: importer)
+        await syncPlayStationPads(bottle: bottle, importer: importer)
 
         // The effective backend for this launch: a program-level override wins
         // over the bottle setting, and `.recommended` resolves to its concrete
@@ -461,7 +471,15 @@ public class Wine {
         let steeredLauncher = overridesApplyToDescendants ? nil : launcher
         let effectiveBackendChoice = programOverrides?.graphicsBackend ?? bottle.settings.graphicsBackend
         let effectiveBackend = if effectiveBackendChoice == .recommended {
-            steeredLauncher.map { GraphicsBackendResolver.resolve(for: $0) } ?? recommendedBackend
+            steeredLauncher.map { GraphicsBackendResolver.resolve(for: $0, overlayRuntime: overlayRuntime) }
+                ?? recommendedBackend
+        } else if overlayRuntime != nil, let steeredLauncher, steeredLauncher != .steam,
+                  programOverrides?.graphicsBackend == nil {
+            // On the overlay runtime the launcher's renderer set is an environment
+            // every game it starts inherits, and the client draws on DXMT. Steam
+            // keeps the bottle's choice, so its games get it. A backend picked
+            // for the launcher's own executable still wins.
+            GraphicsBackend.dxmt
         } else {
             effectiveBackendChoice
         }
@@ -470,7 +488,8 @@ public class Wine {
         // not know what is being launched, so pin the decision here or a
         // steered launcher gets DXVK's files and none of its overrides.
         var programOverrides = programOverrides
-        if effectiveBackendChoice == .recommended, effectiveBackend != recommendedBackend {
+        let composedBackend = effectiveBackendChoice == .recommended ? recommendedBackend : effectiveBackendChoice
+        if effectiveBackend != composedBackend {
             var pinned = programOverrides ?? ProgramOverrides()
             pinned.graphicsBackend = effectiveBackend
             programOverrides = pinned
@@ -480,7 +499,23 @@ public class Wine {
         // before anything in the bottle starts, or the app boots into an empty one.
         WineUserProfile.reconcile(bottleURL: bottle.url)
 
-        try prepareBackendPrefix(effectiveBackend, bottle: bottle)
+        if let overlayRuntime {
+            // Nothing is copied into the prefix on this layout, and what an
+            // earlier runtime copied there would shadow the set the environment
+            // selects.
+            overlayRuntime.removeNativeTranslationDLLs(prefixRoot: bottle.url)
+            do {
+                try overlayRuntime.layOutRealD3D12()
+            } catch {
+                logger.error("No real d3d12 beside the timestamp shim: \(error.localizedDescription, privacy: .public)")
+            }
+        } else if !(overridesApplyToDescendants && launcher != nil) {
+            // A game's plan carried by a launcher is the game's alone. DXMT reaches
+            // such a game from its own directory (see `applyDLLOverrides`), and
+            // copying it into system32 here only swapped DXVK's files out from
+            // under the launcher's running helpers until `enableDXVK` put them back.
+            try prepareBackendPrefix(effectiveBackend, bottle: bottle)
+        }
 
         // The MetalFX placeholder serves the bottle's games, and only D3DMetal
         // answers it. A launcher's own launch says nothing about them, so it is
@@ -502,15 +537,19 @@ public class Wine {
             (bottle.settings.autoEnableDXVK &&
                 bottle.settings.detectedLauncher?.requiresDXVK == true)
 
-        if shouldEnableDXVK {
+        if shouldEnableDXVK, overlayRuntime == nil {
             try enableDXVK(bottle: bottle)
         }
 
-        // Build the Wine environment with program overrides flowing through the programUser layer
+        // Build the Wine environment with program overrides flowing through the programUser layer.
+        // On the overlay runtime `-applaunch` carries the game's renderer set: when the client
+        // is not running it is what brings the client up, and the game inherits the client's.
         var wineEnvironment = constructWineEnvironment(
             for: bottle, environment: environment, programOverrides: programOverrides,
             programSettings: programSettings, gameProfileEnvironment: gameProfileEnvironment,
-            recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal
+            recommendedBackend: recommendedBackend, builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+            overlayRuntime: overlayRuntime,
+            launcherBackend: launcher == nil ? nil : effectiveBackend
         )
 
         try await applyDLLOverrides(
@@ -521,9 +560,17 @@ public class Wine {
             descendantLaunchers: descendantLaunchers,
             recommendedBackend: recommendedBackend,
             builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+            descendantBackend: overridesApplyToDescendants ? effectiveBackend : nil,
+            overlayRuntime: overlayRuntime,
             writer: overrideWriter
         )
 
+        // On the overlay runtime Steam's client runs on its games' renderer set,
+        // which its CEF cannot draw on; with the GPU process off it renders in
+        // software. A `-applaunch` that only signals a running client ignores it. First, since
+        // Steam hands whatever follows `-applaunch <id>` to the game.
+        let args = overlayRuntime != nil && launcher == .steam && !args.contains("-cef-disable-gpu")
+            ? ["-cef-disable-gpu"] + args : args
         return PreparedLaunch(
             environment: wineEnvironment,
             arguments: launchArguments(for: url, args: args, programOverrides: programOverrides)
@@ -604,16 +651,23 @@ public class Wine {
     /// and Open in Terminal do). So unless the launch sets the variable itself,
     /// `wine64` runs through `env -u WINEDLLOVERRIDES`.
     ///
+    /// `env` is SIP-protected, so dyld strips every `DYLD_` variable at its exec.
+    /// An ``OverlayRuntime`` engine cannot start without its own, so those are
+    /// handed to `env` to set, after the exec that would have dropped them.
+    ///
     /// - Parameters:
     ///   - launch: A launch from `prepareProgramLaunch`.
     ///   - wineBinary: The `wine64` the command runs. Tests substitute a stub.
     /// - Returns: A shell-safe command string ready for execution.
     static func generateRunCommand(for launch: PreparedLaunch, wineBinary: URL = Wine.wineBinary) -> String {
-        var words = [wineBinary.path(percentEncoded: false)] + launch.arguments
-        if launch.environment["WINEDLLOVERRIDES"] == nil {
-            words = ["env", "-u", "WINEDLLOVERRIDES"] + words
+        var environment = launch.environment
+        var command = ([wineBinary.path(percentEncoded: false)] + launch.arguments).map(\.esc)
+        if environment["WINEDLLOVERRIDES"] == nil {
+            let dyld = environment.keys.filter { $0.hasPrefix("DYLD_") && isValidEnvKey($0) }.sorted()
+                .compactMap { key in environment.removeValue(forKey: key).map { "\(key)=\($0.esc)" } }
+            command = ["env", "-u", "WINEDLLOVERRIDES"] + dyld + command
         }
-        return shellCommand(words.map(\.esc).joined(separator: " "), environment: launch.environment)
+        return shellCommand(command.joined(separator: " "), environment: environment)
     }
 
     /// Prefixes `command` with an assignment for each environment variable.
@@ -650,13 +704,19 @@ public class Wine {
     /// regedit
     /// ```
     ///
-    /// - Parameter bottle: The ``Bottle`` to configure the environment for.
+    /// - Parameters:
+    ///   - bottle: The ``Bottle`` to configure the environment for.
+    ///   - overlayRuntime: The installed ``OverlayRuntime``, if that is the layout
+    ///     installed: its loader is `wine`, and its environment comes along.
     /// - Returns: A multi-line string of shell export commands and aliases.
     @MainActor
-    public static func generateTerminalEnvironmentCommand(bottle: Bottle) -> String {
+    public static func generateTerminalEnvironmentCommand(
+        bottle: Bottle, overlayRuntime: OverlayRuntime? = .installed
+    ) -> String {
         generateTerminalEnvironmentCommand(
             binFolder: WhiskyWineInstaller.binFolder,
-            environment: constructWineEnvironment(for: bottle)
+            environment: constructWineEnvironment(for: bottle, overlayRuntime: overlayRuntime),
+            wine: overlayRuntime?.wineBinary.lastPathComponent ?? "wine64"
         )
     }
 
@@ -668,22 +728,25 @@ public class Wine {
     /// only the existing `$PATH` is left in double quotes, because it has to expand.
     /// Variables are emitted in key order so the output is stable from run to run.
     ///
-    /// Split out of ``generateTerminalEnvironmentCommand(bottle:)`` so tests can point the
+    /// Split out of ``generateTerminalEnvironmentCommand(bottle:overlayRuntime:)`` so tests can point the
     /// bin folder at a path the installer never uses.
-    static func generateTerminalEnvironmentCommand(binFolder: URL, environment: [String: String]) -> String {
+    /// `wine` is the loader's name in the bin folder: `wine64`, or `wine` on an ``OverlayRuntime``.
+    static func generateTerminalEnvironmentCommand(
+        binFolder: URL, environment: [String: String], wine: String = "wine64"
+    ) -> String {
         var cmd = """
         export PATH=\(ShellQuoting.quoted(binFolder.path)):\"$PATH\"
-        export WINE=\"wine64\"
-        alias wine=\"wine64\"
-        alias winecfg=\"wine64 winecfg\"
-        alias msiexec=\"wine64 msiexec\"
-        alias regedit=\"wine64 regedit\"
-        alias regsvr32=\"wine64 regsvr32\"
-        alias wineboot=\"wine64 wineboot\"
-        alias wineconsole=\"wine64 wineconsole\"
-        alias winedbg=\"wine64 winedbg\"
-        alias winefile=\"wine64 winefile\"
-        alias winepath=\"wine64 winepath\"
+        export WINE=\"\(wine)\"
+        alias wine=\"\(wine)\"
+        alias winecfg=\"\(wine) winecfg\"
+        alias msiexec=\"\(wine) msiexec\"
+        alias regedit=\"\(wine) regedit\"
+        alias regsvr32=\"\(wine) regsvr32\"
+        alias wineboot=\"\(wine) wineboot\"
+        alias wineconsole=\"\(wine) wineconsole\"
+        alias winedbg=\"\(wine) winedbg\"
+        alias winefile=\"\(wine) winefile\"
+        alias winepath=\"\(wine) winepath\"
         """
 
         for (key, value) in environment.sorted(by: { $0.key < $1.key }) {
@@ -1121,7 +1184,11 @@ public class Wine {
     /// per-launch ``enableDXMT(payloadRoot:prefixRoot:)`` guard verifies the whole
     /// trio.
     public static func isDXMTRuntimeNative() -> Bool {
-        isDXMTRuntimeNative(payloadRoot: dxmtFolder)
+        if let overlay = OverlayRuntime.installed {
+            // Builtin by design there, found through WINEDLLPATH_PREPEND.
+            return overlay.isAvailable(.dxmt)
+        }
+        return isDXMTRuntimeNative(payloadRoot: dxmtFolder)
     }
 
     /// Capability check against an explicit payload root. Factored out so the
@@ -1301,6 +1368,157 @@ public class Wine {
                     from: x32Payload.appending(path: name)
                 )
             }
+        }
+    }
+
+    /// Installs DXMT's D3D trio next to one executable, for a game that has to
+    /// run on DXMT in a bottle whose system directories hold DXVK's files.
+    ///
+    /// Both layers ship `d3d11.dll` and `d3d10core.dll`, and Steam's own
+    /// processes need DXVK's (#252), so they cannot share `system32`. Wine looks
+    /// in the executable's directory before `system32` for a DLL loaded native,
+    /// so under the `n,b` DXMT set in its `AppDefaults` entry the game loads
+    /// these copies while every other process keeps the prefix's. Without an
+    /// `n` override the loader prefers the builtin, so the copies are inert for
+    /// any other set. `winemetal` stays builtin, reached through its system
+    /// directory placeholder, which is only installed when missing.
+    ///
+    /// A file by one of those names is only replaced while it is the copy
+    /// recorded in the directory's ``AppLocalDXMTManifest``, or already the
+    /// payload's: anything else is the user's or the game's (ReShade, DXVK, a
+    /// game's own build), and the game is left as it is.
+    ///
+    /// The payload half follows the executable: a 32-bit process cannot load
+    /// the 64-bit trio.
+    ///
+    /// - Throws: ``DXMTError/payloadMissing`` when that half of the payload is
+    ///   not a complete native trio, and `CocoaError.fileWriteFileExists` when
+    ///   a file there is not ours, both before anything is written.
+    static func enableAppLocalDXMT(for executable: URL, prefixRoot: URL, payloadRoot: URL = dxmtFolder) throws {
+        let fileManager = FileManager.default
+        let is32Bit = (try? PEFile(url: executable))?.architecture == .x32
+        let payload = payloadRoot.appending(path: is32Bit ? "x32" : "x64")
+        guard dxmtNativeTrio.allSatisfy({ (try? isNativePE(payload.appending(path: $0))) == true }) else {
+            throw DXMTError.payloadMissing
+        }
+
+        let directory = executable.deletingLastPathComponent()
+        var manifest = AppLocalDXMTManifest.read(in: directory) ?? AppLocalDXMTManifest()
+        for name in dxmtNativeTrio {
+            let target = directory.appending(path: name)
+            let path = target.path(percentEncoded: false)
+            guard fileManager.fileExists(atPath: path) else { continue }
+            let isOurs = manifest.files[name].map { $0 == WhiskyWineInstaller.sha256(ofFileAt: target) } ?? false
+            guard isOurs || fileManager.contentsEqual(
+                atPath: path, andPath: payload.appending(path: name).path(percentEncoded: false)
+            ) else {
+                throw CocoaError(.fileWriteFileExists, userInfo: [NSFilePathErrorKey: path])
+            }
+        }
+
+        for name in dxmtNativeTrio {
+            let target = directory.appending(path: name)
+            try fileManager.installFileIfContentDiffers(at: target, from: payload.appending(path: name))
+            manifest.files[name] = WhiskyWineInstaller.sha256(ofFileAt: target)
+        }
+        if !manifest.lists(executable) {
+            manifest.executables.append(executable.lastPathComponent)
+        }
+        try manifest.write(in: directory)
+
+        let systemDirectory = prefixRoot.appending(path: "drive_c").appending(path: "windows")
+            .appending(path: is32Bit ? "syswow64" : "system32")
+        let winemetal = systemDirectory.appending(path: "winemetal.dll")
+        if fileManager.fileExists(atPath: systemDirectory.path(percentEncoded: false)),
+           !fileManager.fileExists(atPath: winemetal.path(percentEncoded: false)) {
+            try fileManager.copyItem(at: payload.appending(path: "winemetal.dll"), to: winemetal)
+        }
+    }
+
+    /// Takes an executable that is no longer routed to DXMT off the trio
+    /// ``enableAppLocalDXMT(for:prefixRoot:payloadRoot:)`` placed next to it.
+    ///
+    /// Under a DXVK set, whose `n,b` would otherwise pick these over the
+    /// prefix's DXVK files, they would put the game back on DXMT. The copies go
+    /// once no executable in the directory is routed through them, and only
+    /// those still matching the manifest's hash, whatever the runtime's payload
+    /// has become since, so a file replaced after it was placed stays. A
+    /// directory without a manifest, from before there was one, loses exact
+    /// copies of the current payload only.
+    ///
+    /// - Returns: Whether the executable was routed, so its entry is stale.
+    @discardableResult
+    static func removeAppLocalDXMT(for executable: URL, payloadRoot: URL = dxmtFolder) -> Bool {
+        let fileManager = FileManager.default
+        let directory = executable.deletingLastPathComponent()
+        let exists = { (url: URL) in fileManager.fileExists(atPath: url.path(percentEncoded: false)) }
+        guard var manifest = AppLocalDXMTManifest.read(in: directory) else {
+            var removed = false
+            for name in dxmtNativeTrio where exists(directory.appending(path: name)) {
+                let copy = directory.appending(path: name)
+                let isPayload = ["x64", "x32"].contains { arch in
+                    fileManager.contentsEqual(
+                        atPath: copy.path(percentEncoded: false),
+                        andPath: payloadRoot.appending(path: arch).appending(path: name).path(percentEncoded: false)
+                    )
+                }
+                if isPayload, (try? fileManager.removeItem(at: copy)) != nil {
+                    removed = true
+                }
+            }
+            return removed
+        }
+        guard manifest.lists(executable) else { return false }
+
+        manifest.executables.removeAll { $0.caseInsensitiveCompare(executable.lastPathComponent) == .orderedSame }
+        if manifest.executables.isEmpty {
+            // The trio's names only: the manifest sits in a game folder, so it
+            // never gets to name what is deleted.
+            for name in dxmtNativeTrio {
+                let copy = directory.appending(path: name)
+                if let hash = manifest.files[name], exists(copy), WhiskyWineInstaller.sha256(ofFileAt: copy) == hash {
+                    try? fileManager.removeItem(at: copy)
+                }
+            }
+        }
+        try? manifest.write(in: directory)
+        return true
+    }
+
+    /// Whether ``enableAppLocalDXMT(for:prefixRoot:payloadRoot:)`` routed this
+    /// executable and it has not been taken off since.
+    static func isAppLocalDXMTRouted(_ executable: URL) -> Bool {
+        AppLocalDXMTManifest.read(in: executable.deletingLastPathComponent())?.lists(executable) == true
+    }
+
+    /// What ``enableAppLocalDXMT(for:prefixRoot:payloadRoot:)`` placed in one
+    /// directory, kept beside it: the SHA-256 of each DLL as written, and the
+    /// executables routed through them.
+    struct AppLocalDXMTManifest: Codable, Equatable {
+        static let fileName = ".kadeh-dxmt.plist"
+
+        var files: [String: String] = [:]
+        var executables: [String] = []
+
+        static func read(in directory: URL) -> Self? {
+            guard let data = try? Data(contentsOf: directory.appending(path: fileName)) else { return nil }
+            return try? PropertyListDecoder().decode(Self.self, from: data)
+        }
+
+        /// Writes the manifest, or deletes it once nothing is routed.
+        func write(in directory: URL) throws {
+            let url = directory.appending(path: Self.fileName)
+            guard !executables.isEmpty else {
+                try? FileManager.default.removeItem(at: url)
+                return
+            }
+            let encoder = PropertyListEncoder()
+            encoder.outputFormat = .xml
+            try encoder.encode(self).write(to: url, options: .atomic)
+        }
+
+        func lists(_ executable: URL) -> Bool {
+            executables.contains { $0.caseInsensitiveCompare(executable.lastPathComponent) == .orderedSame }
         }
     }
 }

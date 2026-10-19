@@ -20,7 +20,7 @@ import Foundation
 import Testing
 @testable import WhiskyKit
 
-/// `WhiskyCmd shellenv` prints ``Wine/generateTerminalEnvironmentCommand(bottle:)`` for
+/// `WhiskyCmd shellenv` prints ``Wine/generateTerminalEnvironmentCommand(bottle:overlayRuntime:)`` for
 /// `eval`, and Open in Terminal evaluates the same text in the user's login shell. A syntax
 /// check cannot catch the failure this guards against: the old output parsed fine and still
 /// set the wrong values. So these tests evaluate the real output in each installed login
@@ -90,8 +90,8 @@ struct TerminalEnvironmentCommandTests {
             DLLOverrideEntry(dllName: #"x\'$(touch \#(marker.path))\'"#, mode: .native)
         ]
 
-        let output = Wine.generateTerminalEnvironmentCommand(bottle: bottle)
-        let expected = Wine.constructWineEnvironment(for: bottle)
+        let output = Wine.generateTerminalEnvironmentCommand(bottle: bottle, overlayRuntime: nil)
+        let expected = Wine.constructWineEnvironment(for: bottle, overlayRuntime: nil)
 
         // Guard against a vacuous pass: the settings have to put every character under
         // test into the values, starting with the override list from the report.

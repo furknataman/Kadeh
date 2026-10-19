@@ -229,7 +229,7 @@ final class ProgramLaunchPreparationTests {
 
         // What the public `runProgram` prepares, for the Run button, the library and Steam.
         let launch = try await Wine.prepareProgramLaunch(
-            at: game, bottle: bottle, overrideWriter: recorder.writer, importer: importer
+            at: game, bottle: bottle, overrideWriter: recorder.writer, importer: importer, overlayRuntime: nil
         )
 
         #expect(recorder.imports == [CJKFontReplacements.registryDocument(for: CJKFontReplacements.replacements)])
@@ -252,9 +252,9 @@ final class ProgramLaunchPreparationTests {
         #expect(!command.contains("WINEDLLOVERRIDES="))
         #expect(command.contains("PROGRAM_SETTING=kept"))
         #expect(command.contains("WINEDEBUG=\(WineDebugPreset.dllLoad.winedebugValue.esc)"))
-        #expect(command.hasSuffix(
-            "env -u WINEDLLOVERRIDES \(Wine.wineBinary.esc) start /unix \(program.url.esc) -windowed"
-        ))
+        // On an overlay runtime its DYLD_ variables sit between the two, as `env`'s own.
+        #expect(command.contains("env -u WINEDLLOVERRIDES "))
+        #expect(command.hasSuffix("\(Wine.wineBinary.esc) start /unix \(program.url.esc) -windowed"))
     }
 
     @Test("Overrides meant for a descendant go to its own entry, off the launcher's and the environment")
@@ -268,7 +268,7 @@ final class ProgramLaunchPreparationTests {
         let launch = try await Wine.prepareProgramLaunch(
             at: steam, args: ["-applaunch", "1174180"], bottle: bottle, programOverrides: plan,
             overridesApplyToDescendants: true, descendantExecutables: ["RDR2.exe"],
-            overrideWriter: recorder.writer
+            overrideWriter: recorder.writer, overlayRuntime: nil
         )
 
         // A client this invocation starts would inherit the variable.
@@ -291,7 +291,7 @@ final class ProgramLaunchPreparationTests {
 
         let launch = try await Wine.prepareProgramLaunch(
             at: program.url, args: ["-x"], bottle: bottle, programOverrides: overrides,
-            overrideWriter: RegistryRecorder().writer
+            overrideWriter: RegistryRecorder().writer, overlayRuntime: nil
         )
 
         #expect(launch.arguments == [

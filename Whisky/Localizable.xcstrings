@@ -552,7 +552,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arka Plan Olaylarına İzin Ver"
+            "value" : "Oyun arka plandayken de kolu dinle"
           }
         },
         "uk" : {
@@ -577,6 +577,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允許背景事件"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Background Events"
           }
         }
       }
@@ -2124,7 +2130,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oyun Kumandası ve Giriş"
+            "value" : "Oyun kolu ve klavye"
           }
         },
         "uk" : {
@@ -2149,6 +2155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "控制器與輸入"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller & Input"
           }
         }
       }
@@ -2260,7 +2272,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kumanda Uyumluluk Modu"
+            "value" : "Oyun kolu uyumluluk modu"
           }
         },
         "uk" : {
@@ -2285,6 +2297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "控制器相容模式"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller Compatibility Mode"
           }
         }
       }
@@ -2396,7 +2414,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kumanda Geçici Çözümleri"
+            "value" : "Oyun kolu sorunları"
           }
         },
         "uk" : {
@@ -2421,6 +2439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "控制器因應措施"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controller Workarounds"
           }
         }
       }
@@ -3656,7 +3680,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HIDAPI'yi Kapat"
+            "value" : "HIDAPI'yi kapat"
           }
         },
         "uk" : {
@@ -3681,6 +3705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停用 HIDAPI"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable HIDAPI"
           }
         }
       }
@@ -4088,7 +4118,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "macOS'te sık görülen oyun kumandası algılama ve tuş eşleme sorunları için geçici çözümleri etkinleştirir (frankea/Whisky#42)"
+            "value" : "macOS'te oyun kolunun görünmemesi ya da tuşların karışması gibi sık görülen sorunlar için ek ayarları açar."
           }
         },
         "uk" : {
@@ -4113,6 +4143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用針對 macOS 上常見遊戲控制器偵測與對應問題的因應措施 (frankea/Whisky#42)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enables workarounds for common game controller detection and mapping issues on macOS (frankea/Whisky#42)"
           }
         }
       }
@@ -5928,7 +5964,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kumandalar hâlâ çalışmıyorsa Bluetooth yerine USB ile bağlanmayı deneyin veya oyunun kendi kumanda desteği ayarlarını denetleyin."
+            "value" : "Kol hâlâ çalışmıyorsa Bluetooth yerine USB ile bağlamayı deneyin ya da oyunun kendi kol ayarlarına bakın."
           }
         },
         "uk" : {
@@ -5953,6 +5989,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果控制器仍然無法使用，請改用 USB 連接而非藍牙，或查看遊戲本身是否有控制器支援設定。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If controllers still don't work, try connecting via USB instead of Bluetooth, or check if the game has native controller support settings."
           }
         }
       }
@@ -9921,7 +9963,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PlayStation ve Switch kumandalarında XInput biçimine dönüştürmek yerine yerel düğme düzenlerini korumak için SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1 ayarlar."
+            "value" : "PlayStation ve Switch kollarında tuş düzenini XInput biçimine çevirmeden korur (SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1)."
           }
         },
         "uk" : {
@@ -9946,6 +9988,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定 SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1，保留 PlayStation 與 Switch 控制器的原生按鍵配置，而不轉換為 XInput 格式。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets SDL_GAMECONTROLLER_USE_BUTTON_LABELS=1 to preserve native button layouts for PlayStation and Switch controllers instead of converting to XInput format."
           }
         }
       }
@@ -10057,7 +10105,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oyun penceresi odakta değilken kumanda girişini etkinleştirmek için SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1 ayarlar."
+            "value" : "Oyun penceresi önde değilken de kol çalışır (SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1)."
           }
         },
         "uk" : {
@@ -10082,6 +10130,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定 SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1，讓遊戲視窗不在前景時仍可接收控制器輸入。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS=1 to enable controller input when the game window doesn't have focus."
           }
         }
       }
@@ -10193,7 +10247,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SDL'nin alternatif giriş arka uçlarını kullanmasını zorlamak için SDL_JOYSTICK_HIDAPI=0 ayarlar. Bazı kumandalarda algılamayı iyileştirebilir."
+            "value" : "SDL'nin kolu başka bir yolla okumasını sağlar (SDL_JOYSTICK_HIDAPI=0). Bazı kolların tanınmasına yardımcı olabilir."
           }
         },
         "uk" : {
@@ -10218,6 +10272,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定 SDL_JOYSTICK_HIDAPI=0，強制 SDL 使用其他輸入後端。可能改善部分控制器的偵測。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets SDL_JOYSTICK_HIDAPI=0 to force SDL to use alternative input backends. May improve detection for some controllers."
           }
         }
       }
@@ -10613,7 +10673,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu ayarlar, kumanda algılamayı ve düğme eşlemeyi iyileştirmek için SDL ortam değişkenlerini değiştirir. Kumandanız doğru çalışmıyorsa farklı kombinasyonları deneyin."
+            "value" : "Bu ayarlar, kolun tanınması ve tuşların doğru eşlenmesi için SDL ayarlarını değiştirir. Kolunuz doğru çalışmıyorsa farklı birleşimleri deneyin."
           }
         },
         "uk" : {
@@ -10638,6 +10698,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這些設定會修改 SDL 環境變數，以改善控制器偵測與按鍵對應。如果控制器運作不正常，可嘗試不同的組合。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "These settings modify SDL environment variables to improve controller detection and button mapping. Try different combinations if your controller isn't working correctly."
           }
         }
       }
@@ -11037,7 +11103,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yerel Düğme Etiketlerini Kullan"
+            "value" : "Kolun kendi tuş adlarını kullan"
           }
         },
         "uk" : {
@@ -11062,6 +11128,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用原生按鍵標籤"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Native Button Labels"
           }
         }
       }
@@ -12494,6 +12566,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法開啟程式！"
+          }
+        }
+      }
+    },
+    "archive.chooseProgram" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the program that starts the game or its setup."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunu ya da kurulumu başlatan programı seçin."
           }
         }
       }
@@ -24200,6 +24288,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯出為封存檔⋯"
+          }
+        }
+      }
+    },
+    "button.installFromArchive" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install from Archive..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arşivden Kur..."
+          }
+        }
+      }
+    },
+    "button.installFromArchive.help" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracts a zip, rar, 7z or iso file and starts the setup inside."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zip, rar, 7z ya da iso dosyasını çıkarır ve içindeki kurulumu başlatır."
           }
         }
       }
@@ -58853,6 +58973,12 @@
             "state" : "translated",
             "value" : "Konfiguruj butelkę"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişe ayarları"
+          }
         }
       }
     },
@@ -58881,6 +59007,12 @@
             "state" : "translated",
             "value" : "Uruchamia ten program"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunu açar"
+          }
         }
       }
     },
@@ -58903,6 +59035,12 @@
             "state" : "translated",
             "value" : "Nigdy nie uruchamiaj"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiç açılmadı"
+          }
         }
       }
     },
@@ -58924,6 +59062,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Launcher"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlatıcı"
           }
         }
       }
@@ -58953,6 +59097,12 @@
             "state" : "translated",
             "value" : "Uruchamianie…"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açılıyor…"
+          }
         }
       }
     },
@@ -58981,6 +59131,12 @@
             "state" : "translated",
             "value" : "Uruchomione"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık"
+          }
         }
       }
     },
@@ -58989,7 +59145,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stop"
+            "value" : "Close game"
           }
         },
         "en-GB" : {
@@ -59008,6 +59164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zatrzymaj"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunu kapat"
           }
         }
       }
@@ -59030,6 +59192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Odepnij"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabitlemeyi kaldır"
           }
         }
       }
@@ -59059,6 +59227,12 @@
             "state" : "translated",
             "value" : "Stwórz butelkę, w której będą instalowane programy na Windowsa."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows programlarını kurmak için önce bir şişe oluşturun."
+          }
         }
       }
     },
@@ -59080,6 +59254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programy zainstalowane w butelce będą się tu wyświetlać"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir şişeye kurduğunuz oyunlar burada görünür."
           }
         }
       }
@@ -59103,6 +59283,12 @@
             "state" : "translated",
             "value" : "Otwórz butelkę i przypnij program, aby go zobaczyć tutaj."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişeyi aç"
+          }
         }
       }
     },
@@ -59124,6 +59310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jeszcze nic nie zainstalowano"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz kurulu bir şey yok"
           }
         }
       }
@@ -59152,6 +59344,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nie można było uruchomić"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun açılamadı"
           }
         }
       }
@@ -59197,6 +59395,12 @@
             "state" : "translated",
             "value" : "Steam już nie wyświetla tej gry jako zainstalowanej."
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam bu oyunu artık kurulu göstermiyor."
+          }
         }
       }
     },
@@ -59205,7 +59409,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search programs"
+            "value" : "Search games"
           }
         },
         "en-GB" : {
@@ -59218,6 +59422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Szukaj programów"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun ara"
           }
         }
       }
@@ -59243,6 +59453,12 @@
           }
         },
         "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Steam"
@@ -59275,6 +59491,12 @@
             "state" : "translated",
             "value" : "Sortuj"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sırala"
+          }
         }
       }
     },
@@ -59302,6 +59524,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "wg butelki"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişeye göre"
           }
         }
       }
@@ -59331,6 +59559,12 @@
             "state" : "translated",
             "value" : "wg nazwy"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ada göre"
+          }
         }
       }
     },
@@ -59358,6 +59592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "wg ostatnio granych"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynanan"
           }
         }
       }
@@ -59393,6 +59633,12 @@
             "state" : "translated",
             "value" : "Biblioteka"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kütüphane"
+          }
         }
       }
     },
@@ -59420,6 +59666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Butelki"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişeler"
           }
         }
       }
@@ -60527,7 +60779,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Başlamak için ilk Bottle'ınızı oluşturunuz"
+            "value" : "Başlamak için ilk şişenizi oluşturun"
           }
         },
         "uk" : {
@@ -73725,6 +73977,38 @@
         }
       }
     },
+    "settings.toggle.performanceOverlay" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Performance Overlay"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Performans Göstergesi"
+          }
+        }
+      }
+    },
+    "settings.toggle.performanceOverlay.info" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows FPS and system info (temperature, usage, fans) over the game."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FPS ve sistem bilgileri (sıcaklık, kullanım, fan) oyunun üzerinde gösterilir."
+          }
+        }
+      }
+    },
     "settings.toggle.telemetry" : {
       "localizations" : {
         "ar" : {
@@ -81275,6 +81559,54 @@
         }
       }
     },
+    "status.extractFailed %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't extract the archive. It may be damaged, encrypted or split into parts. (%@)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arşiv açılamadı. Dosya bozuk, şifreli ya da parçalı olabilir. (%@)"
+          }
+        }
+      }
+    },
+    "status.extracting %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracting %@, this may take a while..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ çıkarılıyor, biraz sürebilir..."
+          }
+        }
+      }
+    },
+    "status.installerStarted" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup started. When it finishes, the game shows up in the library."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulum başladı. Bitince oyun kütüphanede görünür."
+          }
+        }
+      }
+    },
     "status.launchFailed %@" : {
       "localizations" : {
         "ar" : {
@@ -81715,6 +82047,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已在終端機中啟動：%@"
+          }
+        }
+      }
+    },
+    "status.noProgramInArchive" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No program to run was found in the archive. The folder is open in Finder."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arşivde çalıştırılacak program bulunamadı. Klasör Finder'da açıldı."
           }
         }
       }
@@ -84656,7 +85004,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İndirilmiş Programlar"
+            "value" : "Yüklü Programlar"
           }
         },
         "uk" : {
@@ -113140,6 +113488,2806 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已安裝的 Wine 執行階段未包含 DXMT。請在 Whisky 的設定流程中更新執行階段後重試。"
+          }
+        }
+      }
+    },
+    "library.sort.mostPlayed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En çok oynanan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most played"
+          }
+        }
+      }
+    },
+    "library.card.total %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplam %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ total"
+          }
+        }
+      }
+    },
+    "library.card.lastPlayed %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynama: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last played %@"
+          }
+        }
+      }
+    },
+    "library.card.openPage" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun sayfası"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game page"
+          }
+        }
+      }
+    },
+    "library.warning.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyun bu ayarla açılmayabilir"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This game may not start with this setting"
+          }
+        }
+      }
+    },
+    "library.warning.launchAnyway" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yine de aç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open anyway"
+          }
+        }
+      }
+    },
+    "library.warning.cancel" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "game.page.totalPlaytime" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplam oynama süresi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total playtime"
+          }
+        }
+      }
+    },
+    "game.page.lastPlayed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynama"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last played"
+          }
+        }
+      }
+    },
+    "game.page.neverPlayed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz oynanmadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not played yet"
+          }
+        }
+      }
+    },
+    "game.page.graphics" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grafik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphics"
+          }
+        }
+      }
+    },
+    "game.page.steamPlaytimeNote" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süreyi Steam tutuyor; başka bilgisayarlarda oynadığınız süre de dâhil."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam keeps this time, including play on other computers."
+          }
+        }
+      }
+    },
+    "game.page.turkishPatch" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Türkçe yama"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turkish patch"
+          }
+        }
+      }
+    },
+    "game.page.close" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "game.page.play" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyna"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
+    },
+    "saves.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves"
+          }
+        }
+      }
+    },
+    "saves.searching" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt klasörleri aranıyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looking for save folders…"
+          }
+        }
+      }
+    },
+    "saves.start.explanation" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh, oyunu her kapattığınızda kayıtlarınızı kendiliğinden yedekleyebilir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh can back up your saves by itself every time you close the game."
+          }
+        }
+      }
+    },
+    "saves.start.find" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarımı koru"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protect my saves"
+          }
+        }
+      }
+    },
+    "saves.choose.none" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh bu oyunun kayıt klasörünü bulamadı. Biliyorsanız klasörü kendiniz seçebilirsiniz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh couldn't find this game's save folder. If you know where it is, you can choose it yourself."
+          }
+        }
+      }
+    },
+    "saves.choose.explanation" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarınız büyük olasılıkla aşağıdaki klasörlerde. İşaretli olanlar yedeklenir; emin değilseniz olduğu gibi bırakın."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saves are most likely in the folders below. The ticked ones are backed up; if you're not sure, leave them as they are."
+          }
+        }
+      }
+    },
+    "saves.choose.confirm" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedeklemeyi başlat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start backing up"
+          }
+        }
+      }
+    },
+    "saves.addFolder" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasör ekle…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add folder…"
+          }
+        }
+      }
+    },
+    "saves.addFolder.message" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun kayıtlarının durduğu klasörü seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the folder that holds the game's saves."
+          }
+        }
+      }
+    },
+    "saves.cancel" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "saves.showInFinder" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder'da göster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "saves.removeFolder" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listeden çıkar (klasör silinmez)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from list (the folder is not deleted)"
+          }
+        }
+      }
+    },
+    "saves.auto.note" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunu kapattığınızda kayıtlar değiştiyse kendiliğinden yedeklenir. Son 10 otomatik ve 10 elle alınan yedek saklanır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you close the game, your saves are backed up by themselves if they changed. The last 10 automatic and 10 manual backups are kept."
+          }
+        }
+      }
+    },
+    "saves.backUpNow" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdi yedekle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back up now"
+          }
+        }
+      }
+    },
+    "saves.backUp.done" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedek alındı."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup made."
+          }
+        }
+      }
+    },
+    "saves.location" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedeklerin yeri:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup location:"
+          }
+        }
+      }
+    },
+    "saves.restore" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yükle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore"
+          }
+        }
+      }
+    },
+    "saves.restore.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtları bu yedekteki hâline döndürür."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puts your saves back the way they were in this backup."
+          }
+        }
+      }
+    },
+    "saves.restore.busy" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun açık olduğu için geri yükleme şu an kapalı. Önce oyunu kapatın."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring is off while the game is open. Close the game first."
+          }
+        }
+      }
+    },
+    "saves.restore.confirm.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu yedeğe dönülsün mü?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go back to this backup?"
+          }
+        }
+      }
+    },
+    "saves.restore.confirm.action" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yükle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore"
+          }
+        }
+      }
+    },
+    "saves.restore.confirm.message %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarınız %@ tarihli yedekteki hâline döner. Şu anki kayıtlarınız önce ayrıca yedeklenir; istediğinizde onlara geri dönebilirsiniz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saves go back to how they were in the backup from %@. Your current saves are backed up separately first, so you can go back to them whenever you like."
+          }
+        }
+      }
+    },
+    "saves.restore.safetyLabel" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yüklemeden önce"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Before restore"
+          }
+        }
+      }
+    },
+    "saves.restore.done" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlar geri yüklendi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves restored."
+          }
+        }
+      }
+    },
+    "saves.place.documents" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belgeler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documents"
+          }
+        }
+      }
+    },
+    "saves.place.savedGames" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlı Oyunlar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved Games"
+          }
+        }
+      }
+    },
+    "saves.reason.steamCloud" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam bulut kaydı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam Cloud save"
+          }
+        }
+      }
+    },
+    "saves.reason.nameMatch" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun adını taşıyor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Named after the game"
+          }
+        }
+      }
+    },
+    "saves.reason.gameFolder" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun klasöründe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the game's folder"
+          }
+        }
+      }
+    },
+    "saves.reason.recentlyChanged" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynadığınızda değişti"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changed when you last played"
+          }
+        }
+      }
+    },
+    "saves.lastChanged %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "son değişiklik: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "changed %@"
+          }
+        }
+      }
+    },
+    "saves.error.nothingToBackUp" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt klasörlerinin hiçbiri şu an yok. Oyunda kayıt yaptıktan sonra yeniden deneyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None of the save folders exist right now. Save in the game, then try again."
+          }
+        }
+      }
+    },
+    "saves.error.archive %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedek dosyasında bir sorun çıktı: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong with the backup file: %@"
+          }
+        }
+      }
+    },
+    "saves.error.invalid" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu dosya Kadeh'in aldığı bir yedek değil ya da bozuk; geri yüklenmedi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This file isn't a Kadeh backup or it is damaged, so it wasn't restored."
+          }
+        }
+      }
+    },
+    "settings.saves" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt yedekleri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save backups"
+          }
+        }
+      }
+    },
+    "settings.saves.location" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedeklerin yeri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup location"
+          }
+        }
+      }
+    },
+    "settings.saves.showInFinder" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder'da göster"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        }
+      }
+    },
+    "settings.saves.change" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değiştir…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change…"
+          }
+        }
+      }
+    },
+    "settings.saves.info" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarını koruduğunuz oyunlar, her kapanışta buraya yedeklenir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games whose saves you protect are backed up here every time they close."
+          }
+        }
+      }
+    },
+    "input.playStationAsXbox" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayStation kolunu Xbox kolu gibi kullan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use PlayStation controller as an Xbox controller"
+          }
+        }
+      }
+    },
+    "input.playStationAsXbox.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun PlayStation kolunuzu görmüyorsa açın. Bu şişedeki bütün oyunları ve kolları etkiler; bazı oyunlarda titreşim çalışmayabilir. Açık oyunları kapatıp yeniden açınca geçerli olur."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn this on if the game doesn't see your PlayStation controller. It affects every game and controller in this bottle; vibration may not work in some games. Takes effect once open games are closed and started again."
+          }
+        }
+      }
+    },
+    "input.playStationAsXbox.unsupported" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüklü Wine sürümü bunu desteklemiyor."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The installed Wine version doesn't support this."
+          }
+        }
+      }
+    },
+    "library.warning.dx12" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun DirectX 12 kullanıyor gibi görünüyor; şişenin grafik ayarı (%@) bunu çalıştıramıyor. “Ayarları aç” ile D3DMetal'i seçebilirsiniz. Bu ayar, şişedeki bütün oyunları etkiler."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This game seems to use DirectX 12, but the bottle's graphics setting (%@) can't run it. Use “Open settings” to choose D3DMetal. This setting affects every game in the bottle."
+          }
+        }
+      }
+    },
+    "home.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana sayfa"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
+    },
+    "home.continue" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynamaya devam edin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue playing"
+          }
+        }
+      }
+    },
+    "home.start" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynamaya başlayın"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start playing"
+          }
+        }
+      }
+    },
+    "home.recent" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynananlar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recently played"
+          }
+        }
+      }
+    },
+    "home.seeAll" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tümünü gör"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See all"
+          }
+        }
+      }
+    },
+    "home.restoring" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlar geri yükleniyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restoring saves…"
+          }
+        }
+      }
+    },
+    "sidebar.playtime" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynama süresi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playtime"
+          }
+        }
+      }
+    },
+    "sidebar.activity" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinlik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "sidebar.activity.running" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu anda bir oyun açık"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A game is running"
+          }
+        }
+      }
+    },
+    "sidebar.activity.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık oyunları ve programları ayrı bir pencerede gösterir"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows running games and programs in a separate window"
+          }
+        }
+      }
+    },
+    "library.card.openPage.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun ayrıntıları ve kayıt yedekleri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game details and save backups"
+          }
+        }
+      }
+    },
+    "library.warning.openSettings" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarları aç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open settings"
+          }
+        }
+      }
+    },
+    "library.restoring.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biraz bekleyin"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait"
+          }
+        }
+      }
+    },
+    "library.restoring.message" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarınız geri yükleniyor; bitince oyunu açabilirsiniz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saves are being restored; you can open the game when it's done."
+          }
+        }
+      }
+    },
+    "game.page.back" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        }
+      }
+    },
+    "game.page.missing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyun artık kütüphanede yok"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This game is no longer in the library"
+          }
+        }
+      }
+    },
+    "game.page.stat.total" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplam süre"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total time"
+          }
+        }
+      }
+    },
+    "game.page.stat.lastPlayed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynama"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last played"
+          }
+        }
+      }
+    },
+    "game.page.stat.size" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyut"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        }
+      }
+    },
+    "game.page.stat.directX" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DirectX"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DirectX"
+          }
+        }
+      }
+    },
+    "game.page.stat.bottle" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottle"
+          }
+        }
+      }
+    },
+    "game.page.dx12.short" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grafik ayarı DirectX 12'ye uygun değil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphics setting doesn't support DirectX 12"
+          }
+        }
+      }
+    },
+    "activity.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinlik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "activity.menu" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinlik"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "activity.bottles" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişeler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottles"
+          }
+        }
+      }
+    },
+    "activity.programs" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık oyunlar ve programlar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open games and programs"
+          }
+        }
+      }
+    },
+    "activity.nothingRunning" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu an açık bir oyun ya da program yok."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No game or program is open right now."
+          }
+        }
+      }
+    },
+    "activity.checking" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakılıyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking…"
+          }
+        }
+      }
+    },
+    "activity.bottle.running" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çalışıyor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Running"
+          }
+        }
+      }
+    },
+    "activity.bottle.stopped" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durdu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopped"
+          }
+        }
+      }
+    },
+    "activity.program.bottle %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şişe: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottle: %@"
+          }
+        }
+      }
+    },
+    "activity.program.openFor %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ süredir açık"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "open for %@"
+          }
+        }
+      }
+    },
+    "activity.close" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "activity.close.accessibility %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ programını kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close %@"
+          }
+        }
+      }
+    },
+    "activity.close.title %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kapatılsın mı?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close %@?"
+          }
+        }
+      }
+    },
+    "activity.close.message" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce oyunun kendisinin kapanması istenir; 8 saniye içinde kapanmazsa zorla kapatılır. Kaydedilmemiş ilerleme kaybolabilir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The game is asked to close first; if it hasn't closed within 8 seconds, it is forced to. Unsaved progress may be lost."
+          }
+        }
+      }
+    },
+    "activity.close.confirm" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "activity.cancel" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "activity.closing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapatılıyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing…"
+          }
+        }
+      }
+    },
+    "activity.openLogs" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlükleri aç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Logs"
+          }
+        }
+      }
+    },
+    "activity.openLogs.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir sorun olduğunda destek için istenen günlük dosyalarını Finder'da gösterir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows in Finder the log files support asks for when something goes wrong."
+          }
+        }
+      }
+    },
+    "activity.stopAll" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hepsini kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close All"
+          }
+        }
+      }
+    },
+    "activity.stopAll.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bütün şişelerdeki açık oyunları ve programları kapatır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closes every open game and program in every bottle."
+          }
+        }
+      }
+    },
+    "activity.stopAll.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açık oyunların ve programların hepsi kapatılsın mı?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close all open games and programs?"
+          }
+        }
+      }
+    },
+    "activity.stopAll.message" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydedilmemiş ilerleme kaybolabilir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsaved progress may be lost."
+          }
+        }
+      }
+    },
+    "activity.stopAll.confirm" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hepsini kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close All"
+          }
+        }
+      }
+    },
+    "activity.stopping" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapatılıyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing…"
+          }
+        }
+      }
+    },
+    "playtime.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynama süresi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playtime"
+          }
+        }
+      }
+    },
+    "playtime.thisWeek" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu hafta"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week"
+          }
+        }
+      }
+    },
+    "playtime.thisMonth" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ay"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This month"
+          }
+        }
+      }
+    },
+    "playtime.noHistory" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haftalık süre, oyunları Kadeh'ten açtıkça burada görünür."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly time shows up here as you open games from Kadeh."
+          }
+        }
+      }
+    },
+    "playtime.games" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunlar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games"
+          }
+        }
+      }
+    },
+    "playtime.noGames" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz oynanmış bir oyun yok."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No games played yet."
+          }
+        }
+      }
+    },
+    "playtime.steamNote" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam oyunlarının toplam süresi Steam'in kendi kaydından gelir; başka bilgisayarlarda oynadıklarınız da buna dâhildir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totals for Steam games come from Steam's own record, including play on other computers."
+          }
+        }
+      }
+    },
+    "playtime.lastPlayed %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son oynama: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last played: %@"
+          }
+        }
+      }
+    },
+    "playtime.row.hint" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun sayfasını açar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the game's page."
+          }
+        }
+      }
+    },
+    "playtime.chart.week" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hafta"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week"
+          }
+        }
+      }
+    },
+    "playtime.chart.hours" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hours"
+          }
+        }
+      }
+    },
+    "playtime.chart.thisWeek" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu hafta"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This week"
+          }
+        }
+      }
+    },
+    "playtime.chart.accessibility" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son 8 haftanın oynama süresi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playtime over the last 8 weeks"
+          }
+        }
+      }
+    },
+    "saves.folder.options" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasör seçenekleri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder options"
+          }
+        }
+      }
+    },
+    "saves.backUp.first" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlarınız yedeklendi. Artık oyunu her kapattığınızda otomatik yedeklenecek."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saves are backed up. From now on they will be backed up automatically every time you close the game."
+          }
+        }
+      }
+    },
+    "saves.status.summary %@ %lld %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son yedek: %1$@ · %2$lld yedek · %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last backup: %1$@ · %2$lld backups · %3$@"
+          }
+        }
+      }
+    },
+    "saves.status.failed %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son yedek alınamadı: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The last backup failed: %@"
+          }
+        }
+      }
+    },
+    "saves.backups.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedekler"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backups"
+          }
+        }
+      }
+    },
+    "saves.backups.empty" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz yedek yok."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No backups yet."
+          }
+        }
+      }
+    },
+    "saves.backup.safety" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yüklemeden önce"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Before restore"
+          }
+        }
+      }
+    },
+    "saves.restore.done %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tarihli yedek geri yüklendi. Önceki hâline dönmek için “Geri yüklemeden önce” satırını kullanabilirsiniz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The backup from %@ was restored. To go back, use the “Before restore” row."
+          }
+        }
+      }
+    },
+    "saves.when.today %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bugün %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "today %@"
+          }
+        }
+      }
+    },
+    "saves.when.yesterday %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dün %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yesterday %@"
+          }
+        }
+      }
+    },
+    "saves.candidate.large %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyük klasör (%@). Kayıtlar genelde küçüktür; önbellek içeriyor olabilir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large folder (%@). Saves are usually small; it may contain a cache."
+          }
+        }
+      }
+    },
+    "saves.error.folderOverlap" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klasör, yedeklerin durduğu klasörle iç içe olduğu için eklenmedi. Yedekler için Ayarlar'dan başka bir yer seçebilirsiniz."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This folder wasn't added because it overlaps the backup folder. You can choose another place for backups in Settings."
+          }
+        }
+      }
+    },
+    "saves.error.damaged" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedek dosyası denetimde bozuk çıktı, bu yüzden saklanmadı. Eski yedekleriniz yerinde duruyor."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The backup file failed its check, so it wasn't kept. Your earlier backups are untouched."
+          }
+        }
+      }
+    },
+    "saves.error.wrongGame" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu yedek başka bir oyuna ait; geri yüklenmedi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This backup belongs to another game, so it wasn't restored."
+          }
+        }
+      }
+    },
+    "saves.error.notConfirmed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu yedekteki bir klasör artık bu oyunun kayıt klasörleri arasında değil; geri yüklenmedi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A folder in this backup is no longer one of this game's save folders, so it wasn't restored."
+          }
+        }
+      }
+    },
+    "saves.error.outsideBottle" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu yedek, oyunun kayıt klasörlerinin dışına yazmak istiyor; geri yüklenmedi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This backup would write outside the game's save folders, so it wasn't restored."
+          }
+        }
+      }
+    },
+    "saves.error.overlap" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt klasörü ile yedeklerin yeri iç içe. Yedekler için Ayarlar'dan başka bir klasör seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A save folder and the backup folder are inside one another. Choose another backup folder in Settings."
+          }
+        }
+      }
+    },
+    "saves.error.cannotSecure" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu anki kayıtlarınız önce yedeklenemedi, bu yüzden hiçbir şey değiştirilmedi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your current saves couldn't be backed up first, so nothing was changed."
+          }
+        }
+      }
+    },
+    "saves.error.restoring" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıtlar şu an geri yükleniyor. Bitince yeniden deneyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your saves are being restored right now. Try again when it's done."
+          }
+        }
+      }
+    },
+    "saves.reason.short.nothingToBackUp" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kayıt klasörü bulunamadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "save folder not found"
+          }
+        }
+      }
+    },
+    "saves.reason.short.archive" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yedek dosyası yazılamadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the backup file couldn't be written"
+          }
+        }
+      }
+    },
+    "saves.reason.short.overlap" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kayıt klasörü ile yedeklerin yeri iç içe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a save folder and the backup folder overlap"
+          }
+        }
+      }
+    },
+    "saves.reason.short.restoring" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kayıtlar geri yükleniyordu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a restore was in progress"
+          }
+        }
+      }
+    },
+    "settings.saves.refused.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klasör seçilemez"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This folder can't be used"
+          }
+        }
+      }
+    },
+    "settings.saves.refused.message" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçtiğiniz klasör bir oyunun kayıt klasörünün içinde ya da onu içeriyor. Yedekler orada durursa geri yükleme sırasında kaybolabilir. Lütfen başka bir klasör seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The folder you chose is inside a game's save folder or contains one. Backups kept there could be lost during a restore. Please choose another folder."
+          }
+        }
+      }
+    },
+    "settings.saves.refused.ok" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "input.controller.generic" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer kol"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other controller"
+          }
+        }
+      }
+    },
+    "Disable Controller Mapping" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuş eşlemeyi kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable Controller Mapping"
+          }
+        }
+      }
+    },
+    "Preserves physical button positions (Cross/Circle) for PlayStation controllers instead of XInput layout (A/B/X/Y)." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayStation kollarında XInput düzeni (A/B/X/Y) yerine kolun kendi tuş yerlerini (Çarpı/Daire) korur."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preserves physical button positions (Cross/Circle) for PlayStation controllers instead of XInput layout (A/B/X/Y)."
+          }
+        }
+      }
+    },
+    "Map Command Key to Windows Ctrl" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command tuşunu Windows'taki Ctrl gibi kullan"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Map Command Key to Windows Ctrl"
+          }
+        }
+      }
+    },
+    "Sets LeftCommandIsCtrl/RightCommandIsCtrl in Wine's Mac driver registry so Cmd+A/C/V/S register inside Wine apps as Ctrl+A/C/V/S." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine'ın Mac sürücüsünde LeftCommandIsCtrl/RightCommandIsCtrl ayarlarını açar; böylece Cmd+A/C/V/S, Wine uygulamalarında Ctrl+A/C/V/S olarak algılanır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sets LeftCommandIsCtrl/RightCommandIsCtrl in Wine's Mac driver registry so Cmd+A/C/V/S register inside Wine apps as Ctrl+A/C/V/S."
+          }
+        }
+      }
+    },
+    "Connected Controllers" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlı kollar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected Controllers"
+          }
+        }
+      }
+    },
+    "No controllers detected" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlı kol bulunamadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No controllers detected"
+          }
+        }
+      }
+    },
+    "Try connecting via USB or check System Settings > Bluetooth" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolu USB ile bağlamayı deneyin ya da Sistem Ayarları > Bluetooth bölümüne bakın"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try connecting via USB or check System Settings > Bluetooth"
+          }
+        }
+      }
+    },
+    "Bluetooth dropouts can break input; USB is more reliable" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bluetooth bağlantısı kopabilir; USB daha güvenilirdir"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bluetooth dropouts can break input; USB is more reliable"
+          }
+        }
+      }
+    },
+    "Refresh" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yenile"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        }
+      }
+    },
+    "Copy Controller Info" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kol bilgilerini kopyala"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Controller Info"
+          }
+        }
+      }
+    },
+    "Test Input: System Settings > Game Controllers" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolu denemek için: Sistem Ayarları > Oyun Denetleyicileri"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Input: System Settings > Game Controllers"
+          }
+        }
+      }
+    },
+    "Last refreshed: %@ ago" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son yenileme: %@ önce"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last refreshed: %@ ago"
+          }
+        }
+      }
+    },
+    "Battery: %lld%%" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pil: %%%lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery: %lld%%"
+          }
+        }
+      }
+    },
+    "library.card.play" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyna"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play"
+          }
+        }
+      }
+    },
+    "library.card.turkishPatch" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Türkçe yama…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turkish patch…"
+          }
+        }
+      }
+    },
+    "library.card.closeGame" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "library.card.backupFailed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son yedek alınamadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The last backup failed"
+          }
+        }
+      }
+    },
+    "game.page.stat.backup" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yedek"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup"
+          }
+        }
+      }
+    },
+    "game.page.backup.failed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alınamadı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed"
+          }
+        }
+      }
+    },
+    "game.page.backup.none" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz yok"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None yet"
+          }
+        }
+      }
+    },
+    "game.page.backup.off" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "game.page.backup.setUp" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up"
+          }
+        }
+      }
+    },
+    "game.page.backup.setUp.help" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt yedeklerini kurmak için aşağıdaki Kayıtlar bölümüne gider"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goes to the Saves section below to set up backups"
+          }
+        }
+      }
+    },
+    "playtime.countedNote" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Kadeh'ten açılan oyunlar sayılır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only games opened from Kadeh are counted."
+          }
+        }
+      }
+    },
+    "saves.restore.confirm.steam" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam bulutu açıksa Steam, oyunu açarken hangi kaydı kullanacağınızı sorabilir; bu bilgisayardaki kaydı seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If Steam Cloud is on, Steam may ask which save to use when the game starts; choose the one on this computer."
+          }
+        }
+      }
+    },
+    "saves.backup.automatic" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun kapanınca"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When the game closed"
+          }
+        }
+      }
+    },
+    "saves.backup.manual" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elle alındı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Made by hand"
+          }
+        }
+      }
+    },
+    "saves.error.folderMoved" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt klasörü onayladığınız yerde değil, bu yüzden geri yükleme yapılmadı. Klasörü listeden çıkarıp yeniden ekleyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The save folder is no longer where you confirmed it, so nothing was restored. Remove the folder from the list and add it again."
+          }
+        }
+      }
+    },
+    "saves.nested.dropped" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İç içe klasörlerden yalnızca dıştaki eklendi; içindekiler zaten onunla birlikte yedekleniyor."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Of the nested folders, only the outer one was added; what is inside it is already backed up with it."
+          }
+        }
+      }
+    },
+    "saves.nested.fixed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt klasörlerinizden biri diğerinin içindeydi; yalnızca dıştaki tutuldu. Kayıtlarınızın hepsi yine yedekleniyor."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One of your save folders was inside another; only the outer one was kept. All your saves are still backed up."
           }
         }
       }

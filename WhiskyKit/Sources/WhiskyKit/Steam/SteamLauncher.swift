@@ -17,6 +17,9 @@
 //
 
 import Foundation
+import os.log
+
+private let steamLauncherLogger = Logger(subsystem: Bundle.whiskyBundleIdentifier, category: "SteamLauncher")
 
 /// Errors thrown when launching a Steam game.
 public enum SteamLaunchError: LocalizedError, Equatable {
@@ -85,21 +88,24 @@ public enum SteamLauncher {
 
         let installURL = installURL ?? SteamLibrary.enumerate(bottleURL: bottle.url)
             .first { $0.appId == appId }?.installURL
-        let plan = LaunchResolver.plan(
-            steamAppId: appId,
-            userOverrides: installURL.flatMap { userOverrides(forInstallURL: $0, bottle: bottle) }
-        )
+        let plan = plan(appId: appId, installURL: installURL, bottle: bottle)
         let steamExe = steamRoot.appending(path: "steam.exe")
         let gameExecutables = gameExecutables(installURL: installURL, plan: plan)
+        let renderer = clientBackend(for: plan, bottle: bottle)
 
         return Task {
             try await Wine.prepareBottlePrefix(bottle: bottle)
             await Wine.syncAudioRegistry(bottle: bottle)
+            var clientIsRunning = clientIsRunning
+            if let renderer, let overlay = OverlayRuntime.installed,
+               await stopClientIfMismatched(bottle: bottle, steamExe: steamExe, backend: renderer, overlay: overlay) {
+                clientIsRunning = false
+            }
             if !clientIsRunning {
                 let running = await hostSteamPIDs()
                 await startClientIfNeeded(
                     isRunning: { await isClientRunning(bottle: bottle, hostSteamPIDs: running) },
-                    start: { startClient(steamExe: steamExe, bottle: bottle) },
+                    start: { startClient(steamExe: steamExe, bottle: bottle, backend: renderer) },
                     hasStarted: { await !hostSteamPIDs().subtracting(running).isEmpty }
                 )
             }
@@ -119,18 +125,83 @@ public enum SteamLauncher {
         }
     }
 
+    /// The game's plan: its GameDB profile under the user's own settings for it.
+    @MainActor
+    static func plan(appId: Int, installURL: URL?, bottle: Bottle) -> LaunchPlan {
+        LaunchResolver.plan(
+            steamAppId: appId,
+            userOverrides: installURL.flatMap { userOverrides(forInstallURL: $0, bottle: bottle) }
+        )
+    }
+
+    /// The renderer the client has to run on for this game, or `nil` off the
+    /// overlay runtime. There the renderer set is an environment and every
+    /// game the client starts inherits the client's, so the client runs on
+    /// the game's: D3DMetal for a DirectX 12 game, DXMT where the GameDB says
+    /// so. Resolved the way the `-applaunch` invocation resolves it.
+    @MainActor
+    static func clientBackend(
+        for plan: LaunchPlan, bottle: Bottle, overlayRuntime: OverlayRuntime? = .installed
+    ) -> GraphicsBackend? {
+        guard let overlayRuntime else { return nil }
+        let choice = plan.overrides.graphicsBackend ?? bottle.settings.graphicsBackend
+        return GraphicsBackendResolver.concrete(choice, overlayRuntime: overlayRuntime)
+    }
+
     /// Starts `steam.exe -silent` with the user's own overrides for it, the
     /// way the Programs tab would, so the client's entry matches the one a
-    /// game launch writes for it. Runs for the whole session, so it is never
-    /// awaited.
+    /// game launch writes for it. A game launch passes the game's renderer,
+    /// which wins over the client's own. Runs for the whole session, so it is
+    /// never awaited.
     @MainActor
-    static func startClient(steamExe: URL, bottle: Bottle) {
-        let overrides = Program.persistedOverrides(for: steamExe, bottleURL: bottle.url)
+    static func startClient(steamExe: URL, bottle: Bottle, backend: GraphicsBackend? = nil) {
+        var overrides = Program.persistedOverrides(for: steamExe, bottleURL: bottle.url)
+        if let backend {
+            var pinned = overrides ?? ProgramOverrides()
+            pinned.graphicsBackend = backend
+            overrides = pinned
+        }
         Task {
             _ = try? await Wine.runProgram(
                 at: steamExe, args: ["-silent"], bottle: bottle, programOverrides: overrides
             )
         }
+    }
+
+    /// The installed games' executables DXMT may be placed next to, each with
+    /// the overrides the game's launch resolves to: its GameDB entry under the
+    /// user's own settings for the game, found as ``launch`` finds them, so a
+    /// backend the user picked counts as much as one the GameDB recommends.
+    ///
+    /// A target is an executable the entry lists, or the one the user's
+    /// settings come from. Only those get the DXMT trio, since a whole install
+    /// folder's worth would scatter it into tool and launcher directories. The
+    /// others are executables an earlier launch routed, here to be cleaned up.
+    ///
+    /// - Parameters:
+    ///   - bottle: The bottle whose Steam libraries to read.
+    ///   - entries: The GameDB entries to match against. Defaults to the
+    ///     bundled database.
+    @MainActor
+    static func appLocalDXMTCandidates(
+        bottle: Bottle, entries: [GameDBEntry]? = nil
+    ) -> [(url: URL, overrides: ProgramOverrides, isTarget: Bool)] {
+        let games = SteamLibrary.enumerate(bottleURL: bottle.url)
+        guard !games.isEmpty else { return [] }
+        let database = entries ?? GameDBLoader.loadDefaults()
+        var result: [(url: URL, overrides: ProgramOverrides, isTarget: Bool)] = []
+        for game in games {
+            let user = userCandidate(forInstallURL: game.installURL, bottle: bottle)
+            let plan = LaunchResolver.plan(steamAppId: game.appId, userOverrides: user?.overrides, entries: database)
+            let names = Set(plan.gameExecutables.map { $0.lowercased() })
+            for url in SteamLibrary.executableURLs(under: game.installURL) {
+                let isTarget = names.contains(url.lastPathComponent.lowercased())
+                    || url.standardizedFileURL == user?.url.standardizedFileURL
+                guard isTarget || Wine.isAppLocalDXMTRouted(url) else { continue }
+                result.append((url, plan.overrides, isTarget))
+            }
+        }
+        return result
     }
 
     /// The executable names a game launch scopes the game's plan to: what the
@@ -221,6 +292,120 @@ public enum SteamLauncher {
         })
     }
 
+    /// Shuts the bottle's client down when it runs on another renderer set
+    /// than `backend`: `-applaunch` only hands the game to a running client,
+    /// and the game inherits the client's set (Highball's
+    /// `restartSteamIfMismatched`). A client that serves a running game stays,
+    /// since stopping it would end the game. Nothing happens when the
+    /// client's environment cannot be read.
+    /// - Returns: Whether the client was stopped.
+    @MainActor
+    static func stopClientIfMismatched(
+        bottle: Bottle, steamExe: URL, backend: GraphicsBackend, overlay: OverlayRuntime
+    ) async -> Bool {
+        let wanted = overlay.rendererEnvironment(for: backend)["WINEDLLPATH_PREPEND"]
+        guard clientMustStop(bottleProcesses(bottleURL: bottle.url), wanted: wanted) else {
+            return false
+        }
+
+        // Highball's sequence: ask, then SIGTERM the client's own processes, then SIGKILL.
+        if let shutdown = try? Wine.runWineProcess(
+            name: "steam-shutdown", args: [steamExe.path(percentEncoded: false), "-shutdown"], bottle: bottle
+        ) {
+            for await _ in shutdown {}
+        }
+        func waitForClientExit(tenths: Int) async {
+            for _ in 0 ..< tenths {
+                guard bottleProcesses(bottleURL: bottle.url).contains(where: { imageName($0.argv0) == "steam.exe" })
+                else { return }
+                try? await Task.sleep(for: .milliseconds(100))
+            }
+        }
+        await waitForClientExit(tenths: 300)
+        let leftovers = bottleProcesses(bottleURL: bottle.url).filter { clientImages.contains(imageName($0.argv0)) }
+        guard !leftovers.isEmpty else { return true }
+        for process in leftovers {
+            kill(process.pid, SIGTERM)
+        }
+        await waitForClientExit(tenths: 50)
+        for process in leftovers where kill(process.pid, 0) == 0 {
+            kill(process.pid, SIGKILL)
+        }
+        await waitForClientExit(tenths: 20)
+        return true
+    }
+
+    /// Whether the bottle's client runs on another renderer set than the one
+    /// whose `WINEDLLPATH_PREPEND` is `wanted`, and serves no running game.
+    static func clientMustStop(_ processes: [BottleProcess], wanted: String?) -> Bool {
+        guard let client = processes.first(where: { imageName($0.argv0) == "steam.exe" }),
+              client.environment["WINEDLLPATH_PREPEND"] != wanted else {
+            return false
+        }
+        if processes.contains(where: { isGame($0.argv0) }) {
+            steamLauncherLogger.warning("Steam runs on another renderer than the game, but a game is open; kept")
+            return false
+        }
+        return true
+    }
+
+    /// A process of the bottle: its host ID, its `argv[0]`, and its environment.
+    typealias BottleProcess = (pid: pid_t, argv0: String, environment: [String: String])
+
+    /// The Steam client's own processes: what a shutdown stops. Games are not
+    /// among them.
+    static let clientImages: Set<String> = [
+        "steam.exe", "steamwebhelper.exe", "steamservice.exe",
+        "steamerrorreporter.exe", "steamerrorreporter64.exe", "gameoverlayui.exe"
+    ]
+
+    /// The lower-cased image name of a Windows path or a host path.
+    static func imageName(_ argv0: String) -> String {
+        String(argv0.split(whereSeparator: { $0 == "\\" || $0 == "/" }).last ?? "").lowercased()
+    }
+
+    /// Whether a process runs from a Steam game's folder.
+    static func isGame(_ argv0: String) -> Bool {
+        argv0.replacingOccurrences(of: "\\", with: "/").lowercased().contains("/steamapps/common/")
+    }
+
+    /// The processes whose environment names this bottle as `WINEPREFIX`: Wine
+    /// hands its whole environment to every process it starts. Each with its
+    /// `argv[0]`, which for a Windows process is its Windows path.
+    static func bottleProcesses(bottleURL: URL) -> [BottleProcess] {
+        let prefix = bottleURL.path
+        let count = proc_listallpids(nil, 0)
+        guard count > 0 else { return [] }
+        var pids = [pid_t](repeating: 0, count: Int(count) * 2)
+        let found = proc_listallpids(&pids, Int32(pids.count * MemoryLayout<pid_t>.size))
+        return pids.prefix(Int(max(found, 0))).compactMap { pid in
+            guard pid > 0, pid != getpid(), let (argv0, environment) = argumentsAndEnvironment(of: pid),
+                  environment["WINEPREFIX"] == prefix else { return nil }
+            return (pid, argv0, environment)
+        }
+    }
+
+    /// `argv[0]` and the environment of one of our own processes, from
+    /// `KERN_PROCARGS2`. Nil when the kernel refuses or the process is gone.
+    static func argumentsAndEnvironment(of pid: pid_t) -> (String, [String: String])? {
+        var mib: [Int32] = [CTL_KERN, KERN_PROCARGS2, pid]
+        var size = 0
+        guard sysctl(&mib, 3, nil, &size, nil, 0) == 0, size > MemoryLayout<Int32>.size else { return nil }
+        var buffer = [UInt8](repeating: 0, count: size)
+        guard sysctl(&mib, 3, &buffer, &size, nil, 0) == 0 else { return nil }
+        let argc = Int(buffer.withUnsafeBytes { $0.load(as: Int32.self) })
+        // Layout: executable path, argv[0..<argc], then the environment.
+        let strings = buffer[MemoryLayout<Int32>.size ..< size].split(separator: 0)
+            .map { String(decoding: $0, as: UTF8.self) }
+        guard argc > 0, strings.count >= 1 + argc else { return nil }
+        var environment: [String: String] = [:]
+        for entry in strings.dropFirst(1 + argc) {
+            guard let equals = entry.firstIndex(of: "=") else { continue }
+            environment[String(entry[..<equals])] = String(entry[entry.index(after: equals)...])
+        }
+        return (strings[1], environment)
+    }
+
     /// The user's persisted overrides for a game's executables, so settings
     /// tuned in the Programs tab survive a launch from the library or the cli.
     ///
@@ -230,6 +415,13 @@ public enum SteamLauncher {
     /// plists changes nothing for the winner.
     @MainActor
     static func userOverrides(forInstallURL installURL: URL, bottle: Bottle) -> ProgramOverrides? {
+        userCandidate(forInstallURL: installURL, bottle: bottle)?.overrides
+    }
+
+    /// The executable ``userOverrides(forInstallURL:bottle:)`` takes its
+    /// overrides from, with them.
+    @MainActor
+    static func userCandidate(forInstallURL installURL: URL, bottle: Bottle) -> ProgramOverrideCandidate? {
         let scanned = Dictionary(
             bottle.programs.compactMap { program in
                 program.settings.overrides.map { (program.url.standardizedFileURL, $0) }
@@ -243,7 +435,7 @@ public enum SteamLauncher {
                 ?? Program.persistedOverrides(for: url, bottleURL: bottle.url)
             return ProgramOverrideCandidate(url: url, overrides: overrides ?? ProgramOverrides())
         }
-        return SteamLibrary.preferredOverrides(among: candidates)
+        return SteamLibrary.preferredCandidate(among: candidates)
     }
 
     /// Finds the installed game an App ID names, and the bottle holding it.

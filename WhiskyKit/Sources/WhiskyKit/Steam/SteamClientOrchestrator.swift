@@ -198,7 +198,7 @@ public final class SteamClientOrchestrator: ObservableObject {
         let steamExe = steamRoot.appending(path: "steam.exe")
 
         do {
-            try await ensureClientRunning(steamExe: steamExe)
+            try await ensureClientRunning(steamExe: steamExe, for: game)
         } catch {
             launchError = error.localizedDescription
             return
@@ -217,17 +217,17 @@ public final class SteamClientOrchestrator: ObservableObject {
         }
     }
 
-    private func ensureClientRunning(steamExe: URL) async throws {
+    private func ensureClientRunning(steamExe: URL, for game: SteamGame) async throws {
         if let clientStartup {
             return try await clientStartup.value
         }
-        let startup = Task { try await startClient(steamExe: steamExe) }
+        let startup = Task { try await startClient(steamExe: steamExe, for: game) }
         clientStartup = startup
         defer { clientStartup = nil }
         try await startup.value
     }
 
-    private func startClient(steamExe: URL) async throws {
+    private func startClient(steamExe: URL, for game: SteamGame) async throws {
         if await isClientRunning() {
             driver.clientDidBecomeReady()
             return
@@ -236,7 +236,7 @@ public final class SteamClientOrchestrator: ObservableObject {
         if Self.shouldApplyLauncherFixes(settings: bottle.settings) {
             driver.applyLauncherFixes()
         }
-        driver.startClient(steamExe: steamExe)
+        driver.startClient(steamExe: steamExe, for: game)
 
         if await watch.waitForAny(of: ["steam.exe"], timeout: timing.clientReadyTimeout) {
             driver.clientDidBecomeReady()

@@ -87,6 +87,16 @@ public struct BottleInputConfig: Codable, Equatable {
     /// Applied at bottle init / on toggle via `winetricks` registry writes.
     var commandActsAsControl: Bool = false
 
+    /// Whether PlayStation controllers are presented to games as Xbox ones.
+    ///
+    /// Wine treats Sony pads as raw HID devices and drops their XInput copy, so
+    /// a game that only reads XInput sees no controller. When `true`, the
+    /// bottle's registry sets winebus's global `DisableHidraw`, so every pad
+    /// comes through SDL as an XInput one (see ``WinePlayStationPads``). Off by default: forcing XInput
+    /// loses what a game's own PlayStation support adds (adaptive triggers,
+    /// haptics).
+    var playStationAsXbox: Bool = false
+
     public init() {}
 
     public init(from decoder: Decoder) throws {
@@ -112,5 +122,6 @@ public struct BottleInputConfig: Codable, Equatable {
             Bool.self,
             forKey: .commandActsAsControl
         ) ?? false
+        self.playStationAsXbox = try container.decodeIfPresent(Bool.self, forKey: .playStationAsXbox) ?? false
     }
 }

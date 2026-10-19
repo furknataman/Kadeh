@@ -48,8 +48,15 @@ struct LibraryCard: View {
     /// the prefix is plumbing and naming it on every card is noise.
     let bottleName: String?
     let lastPlayed: Date?
+    /// Total time played, when anything has been.
+    var playtime: TimeInterval?
     let state: LibraryEntryState
+    /// Whether the last save backup failed: a small orange mark on the card.
+    var backupFailed = false
     let launch: () -> Void
+    /// Opens the game's own page. The card itself launches, so this is a
+    /// separate button that appears with the play glyph.
+    var openPage: (() -> Void)?
 
     @State private var icon: Image?
     @State private var artwork: Image?
@@ -78,6 +85,28 @@ struct LibraryCard: View {
             card
         }
         .buttonStyle(.plain)
+        .overlay(alignment: .topTrailing) {
+            if let openPage, isActive, state == .idle {
+                // Outside the card's button, so a click here does not launch.
+                Button(action: openPage) {
+                    Image(systemName: "info")
+                        .font(.system(size: 13, weight: .semibold))
+                        .frame(width: 30, height: 30)
+                        .cardGlass(.circle, interactive: true)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(artwork == nil ? foreground : .white)
+                .help(Text(String(
+                    localized: "library.card.openPage.help",
+                    defaultValue: "Oyunun ayrıntıları ve kayıt yedekleri"
+                )))
+                .accessibilityLabel(Text("library.card.openPage"))
+                // Beside the play glyph: the card's padding plus its width and a gap.
+                .padding(.top, 14)
+                .padding(.trailing, 14 + 30 + 8)
+                .transition(.opacity.combined(with: .scale))
+            }
+        }
         .focusable()
         .focused($isFocused)
         // The system ring is a rectangle around the button's frame, so on a
@@ -143,6 +172,9 @@ struct LibraryCard: View {
                         iconView
                     }
                     Spacer()
+                    if backupFailed {
+                        BackupFailedBadge()
+                    }
                     statusView
                 }
                 Spacer(minLength: 8)
@@ -230,11 +262,16 @@ struct LibraryCard: View {
         if item.isLauncher {
             parts.append(String(localized: "library.card.launcher"))
         }
-        if item.source == .steam {
+        // The total says more than where the game came from, and the card
+        // only has one line.
+        if let playtime, !item.isLauncher {
+            parts.append(String(localized: "library.card.total \(WhiskyKit.PlaytimeFormat.short(playtime))"))
+        } else if item.source == .steam {
             parts.append(String(localized: "library.source.steam"))
         }
         if let lastPlayed {
-            parts.append(lastPlayed.formatted(.relative(presentation: .named)))
+            let when = PlaytimeText.relative(lastPlayed)
+            parts.append(item.isLauncher ? when : String(localized: "library.card.lastPlayed \(when)"))
         } else {
             parts.append(String(localized: "library.card.neverRun"))
         }
@@ -265,7 +302,40 @@ struct LibraryCard: View {
     }
 }
 
-private extension View {
+/// How playtime reads, shared by the card and the game page.
+enum PlaytimeText {
+    /// The app's one short format, ``WhiskyKit/PlaytimeFormat/short(_:)``;
+    /// kept so older call sites read the same as everything else.
+    static func short(_ seconds: TimeInterval) -> String {
+        WhiskyKit.PlaytimeFormat.short(seconds)
+    }
+
+    /// "134 saat 5 dakika", spelled out for VoiceOver.
+    static func full(_ seconds: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = seconds >= 3_600 ? [.hour, .minute] : [.minute]
+        return formatter.string(from: max(seconds, 60)) ?? ""
+    }
+
+    /// "dün", "3 gün önce".
+    static func relative(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.dateTimeStyle = .named
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
+    /// "Dün", for a date that starts a line or a value on its own. Inside a
+    /// sentence it stays lower case ("Son oynama: dün"), so use ``relative(_:)`` there.
+    static func relativeStart(_ date: Date) -> String {
+        let text = relative(date)
+        guard let first = text.first else { return text }
+        let language = Bundle.main.preferredLocalizations.first ?? "en"
+        return String(first).uppercased(with: Locale(identifier: language)) + text.dropFirst()
+    }
+}
+
+extension View {
     /// Liquid Glass where the system has it, a plain material where it does not.
     /// The affordance matters more than the material, so the older path is a
     /// real control rather than nothing.

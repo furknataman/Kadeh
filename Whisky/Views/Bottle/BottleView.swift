@@ -29,6 +29,8 @@ enum BottleStage {
 
 struct BottleView: View {
     @ObservedObject var bottle: Bottle
+    /// A page to open straight away, such as the configuration a launch warning points to.
+    var initialStage: BottleStage?
     @State private var path = NavigationPath()
     @State private var programLoading: Bool = false
     @State private var showWinetricksSheet: Bool = false
@@ -163,6 +165,9 @@ struct BottleView: View {
                 guard oldValue != newValue else { return }
                 // Trigger a reload
                 BottleVM.shared.bottles = BottleVM.shared.bottles
+            }
+            .onAppear {
+                if let initialStage, path.isEmpty { path.append(initialStage) }
             }
             .navigationDestination(for: BottleStage.self) { stage in
                 switch stage {

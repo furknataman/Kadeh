@@ -36,6 +36,8 @@ public struct LibrarySourceID: RawRepresentable, Hashable, Sendable, Codable {
     public static let pinned = LibrarySourceID(rawValue: "pinned")
     /// Games installed through the Steam client inside a bottle.
     public static let steam = LibrarySourceID(rawValue: "steam")
+    /// Programs an installer put a desktop or Start menu shortcut to.
+    public static let shortcut = LibrarySourceID(rawValue: "shortcut")
 }
 
 /// One thing a person can launch, whatever put it there.
@@ -57,6 +59,12 @@ public struct LibraryEntry: Identifiable, Hashable, Sendable {
     /// caches its own banners inside the bottle, so a Steam game shows the art
     /// its store page uses without anything being fetched.
     public let artworkURL: URL?
+    /// The wide key art Steam shows behind a game's page, without its title.
+    public let heroURL: URL?
+    /// The game's title as a transparent logo, drawn over ``heroURL``.
+    public let logoURL: URL?
+    /// Portrait box art, for rows of covers.
+    public let portraitURL: URL?
     public let bottleURL: URL
     public let source: LibrarySourceID
     public let launch: Launch
@@ -74,6 +82,9 @@ public struct LibraryEntry: Identifiable, Hashable, Sendable {
         name: String,
         iconURL: URL?,
         artworkURL: URL? = nil,
+        heroURL: URL? = nil,
+        logoURL: URL? = nil,
+        portraitURL: URL? = nil,
         bottleURL: URL,
         source: LibrarySourceID,
         launch: Launch,
@@ -83,6 +94,9 @@ public struct LibraryEntry: Identifiable, Hashable, Sendable {
         self.name = name
         self.iconURL = iconURL
         self.artworkURL = artworkURL
+        self.heroURL = heroURL
+        self.logoURL = logoURL
+        self.portraitURL = portraitURL
         self.bottleURL = bottleURL
         self.source = source
         self.launch = launch
@@ -136,7 +150,9 @@ public enum SteamLibrarySource: LibrarySource {
     public static func entries(inBottleAt url: URL) -> [LibraryEntry] {
         let steamRoot = SteamLibrary.detectInstall(bottleURL: url)
         return SteamLibrary.enumerate(bottleURL: url).map { game in
-            LibraryEntry(
+            // One walk of the app's cache folder per game, shared by every kind of art.
+            let cached = steamRoot.map { cachedFiles(appID: game.appId, steamRoot: $0) } ?? []
+            return LibraryEntry(
                 // Scoped to the bottle, because the same game can be installed
                 // in two of them and an id shared by two rows breaks the grid's
                 // diffing rather than merely looking odd. A pin is already
@@ -144,7 +160,13 @@ public enum SteamLibrarySource: LibrarySource {
                 id: "steam:\(url.path(percentEncoded: false)):\(game.appId)",
                 name: game.name,
                 iconURL: steamRoot.flatMap { iconURL(appID: game.appId, steamRoot: $0) },
-                artworkURL: steamRoot.flatMap { artworkURL(appID: game.appId, steamRoot: $0) },
+                artworkURL: artworkURL(appID: game.appId, in: cached),
+                heroURL: first(of: ["library_hero.jpg", "\(game.appId)_library_hero.jpg"], in: cached),
+                logoURL: first(of: ["logo.png", "\(game.appId)_logo.png"], in: cached),
+                portraitURL: first(
+                    of: ["library_600x900.jpg", "\(game.appId)_library_600x900.jpg", "library_capsule.jpg"],
+                    in: cached
+                ),
                 bottleURL: url,
                 source: id,
                 launch: .steam(appID: game.appId)
@@ -162,11 +184,18 @@ public enum SteamLibrarySource: LibrarySource {
     /// Landscape first because that is the shape of a card. A portrait capsule
     /// is the fallback and gets cropped, which still beats an empty card.
     public static func artworkURL(appID: Int, steamRoot: URL) -> URL? {
+        artworkURL(appID: appID, in: cachedFiles(appID: appID, steamRoot: steamRoot))
+    }
+
+    private static func artworkURL(appID: Int, in cached: [URL]) -> URL? {
         let landscape = ["library_header.jpg", "header.jpg", "\(appID)_header.jpg"]
         let portrait = ["library_capsule.jpg", "library_600x900.jpg", "\(appID)_library_600x900.jpg"]
-        let cached = cachedFiles(appID: appID, steamRoot: steamRoot)
+        return first(of: landscape + portrait, in: cached)
+    }
 
-        for name in landscape + portrait {
+    /// The first of `names`, in that order of preference, that Steam cached.
+    private static func first(of names: [String], in cached: [URL]) -> URL? {
+        for name in names {
             if let match = cached.first(where: { $0.lastPathComponent == name }) {
                 return match
             }
@@ -184,7 +213,11 @@ public enum SteamLibrarySource: LibrarySource {
         let contents = try? FileManager.default.contentsOfDirectory(
             at: folder, includingPropertiesForKeys: [.isRegularFileKey]
         )
-        return contents?.first { $0.pathExtension.lowercased() == "jpg" }
+        // Newer Steam keeps the art beside the icon too, so the icon is the jpg
+        // that is not one of the art's fixed names (it is named by its hash).
+        let art: Set<String> = ["header.jpg", "library_header.jpg", "library_600x900.jpg", "library_capsule.jpg",
+                                "library_hero.jpg", "library_hero_blur.jpg"]
+        return contents?.first { $0.pathExtension.lowercased() == "jpg" && !art.contains($0.lastPathComponent) }
     }
 
     /// Every cached file for one app, from either layout.
@@ -213,7 +246,8 @@ public enum LibraryCatalogue {
     /// launcher is this line plus the type.
     public static let sources: [any LibrarySource.Type] = [
         PinnedLibrarySource.self,
-        SteamLibrarySource.self
+        SteamLibrarySource.self,
+        ShortcutLibrarySource.self
     ]
 
     /// Everything one bottle contributes to the library.

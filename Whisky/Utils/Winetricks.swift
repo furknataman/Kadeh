@@ -125,14 +125,18 @@ class Winetricks {
     private static func writeTerminalScript(command: String, bottle: Bottle, resourcesURL: URL) throws -> URL {
         let winetricksPath = resourcesURL.appending(path: "winetricks").path(percentEncoded: false)
         let pathValue = "\(WhiskyWineInstaller.binFolder.path):\(resourcesURL.path(percentEncoded: false))"
-        let scriptContent = [
+        // An overlay engine cannot start without its dylib paths.
+        let runtimeExports = (OverlayRuntime.installed?.baseEnvironment ?? [:]).sorted { $0.key < $1.key }
+            .map { "export " + ShellQuoting.assignment($0.key, $0.value) }
+        let scriptContent = ([
             "#!/bin/bash",
             "export PATH=\(ShellQuoting.quoted(pathValue)):\"$PATH\"",
-            "export WINE=wine64",
-            "export " + ShellQuoting.assignment("WINEPREFIX", bottle.url.path(percentEncoded: false)),
+            "export WINE=\(Wine.wineBinary.lastPathComponent)",
+            "export " + ShellQuoting.assignment("WINEPREFIX", bottle.url.path(percentEncoded: false))
+        ] + runtimeExports + [
             ShellQuoting.commandLine(["bash", winetricksPath, command]),
             ""
-        ].joined(separator: "\n")
+        ]).joined(separator: "\n")
 
         let scriptURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("whisky-winetricks-\(UUID().uuidString).sh")

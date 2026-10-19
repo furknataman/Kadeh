@@ -285,6 +285,11 @@ public enum SteamLibrary {
     /// Steam games surface as ordinary Programs, so a user can tune one in the
     /// Programs tab, and those settings have to survive the Play button.
     public static func preferredOverrides(among candidates: [ProgramOverrideCandidate]) -> ProgramOverrides? {
+        preferredCandidate(among: candidates)?.overrides
+    }
+
+    /// The executable ``preferredOverrides(among:)`` takes its overrides from.
+    static func preferredCandidate(among candidates: [ProgramOverrideCandidate]) -> ProgramOverrideCandidate? {
         candidates
             .filter { !$0.overrides.isEmpty }
             .min { lhs, rhs in
@@ -293,8 +298,7 @@ public enum SteamLibrary {
                 guard left == right else { return left < right }
                 return lhs.url.lastPathComponent
                     .localizedCaseInsensitiveCompare(rhs.url.lastPathComponent) == .orderedAscending
-            }?
-            .overrides
+            }
     }
 }
 

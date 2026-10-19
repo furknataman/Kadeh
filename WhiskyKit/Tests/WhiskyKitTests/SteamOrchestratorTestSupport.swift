@@ -67,7 +67,7 @@ final class FakeSteamClientDriver: SteamClientDriver {
         }
     }
 
-    func startClient(steamExe _: URL) {
+    func startClient(steamExe _: URL, for _: SteamGame) {
         startClientCalls += 1
         onStartClient?()
     }

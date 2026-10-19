@@ -35,9 +35,10 @@ public protocol SteamClientDriver: AnyObject {
     /// The bottle's process list, as `tasklist.exe` reports it.
     func processList() async -> [WineProcess]
 
-    /// Starts the Steam client silently. Must return promptly: the client runs
-    /// for the whole session and the orchestrator watches for it separately.
-    func startClient(steamExe: URL)
+    /// Starts the Steam client silently, for `game`'s launch. Must return
+    /// promptly: the client runs for the whole session and the orchestrator
+    /// watches for it separately.
+    func startClient(steamExe: URL, for game: SteamGame)
 
     /// Applies Steam's launcher fixes to the bottle. Only called when
     /// ``SteamClientOrchestrator/shouldApplyLauncherFixes(settings:)`` says so.
@@ -110,9 +111,14 @@ open class WineSteamClientDriver: SteamClientDriver {
         await (try? Wine.listProcesses(for: bottle)) ?? []
     }
 
-    /// `steam.exe -silent` runs for the whole session, so the run is never awaited.
-    open func startClient(steamExe: URL) {
-        SteamLauncher.startClient(steamExe: steamExe, bottle: bottle)
+    /// `steam.exe -silent` runs for the whole session, so the run is never
+    /// awaited. On the renderer the game needs, so the launch that follows
+    /// does not have to restart it.
+    open func startClient(steamExe: URL, for game: SteamGame) {
+        let plan = SteamLauncher.plan(appId: game.appId, installURL: game.installURL, bottle: bottle)
+        SteamLauncher.startClient(
+            steamExe: steamExe, bottle: bottle, backend: SteamLauncher.clientBackend(for: plan, bottle: bottle)
+        )
     }
 
     /// Through the shared path, which carries the locale, DXVK and

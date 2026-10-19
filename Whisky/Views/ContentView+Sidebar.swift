@@ -23,12 +23,34 @@ import WhiskyKit
 
 // MARK: - Sidebar & Detail
 
+/// What the sidebar can show in the detail column.
+enum SidebarItem: Hashable {
+    case home
+    case library
+    case playtime
+    case bottle(URL)
+
+    var bottleURL: URL? {
+        if case let .bottle(url) = self { return url }
+        return nil
+    }
+}
+
 extension ContentView {
     var sidebar: some View {
         ScrollViewReader { proxy in
             List(selection: $selected) {
                 Section {
-                    libraryRow
+                    Label("home.title", systemImage: "house")
+                        .tag(SidebarItem.home)
+                        .accessibilityIdentifier("sidebar.home")
+                    Label("library.title", systemImage: "square.grid.2x2")
+                        .tag(SidebarItem.library)
+                        .accessibilityIdentifier("sidebar.library")
+                    Label("sidebar.playtime", systemImage: "chart.bar.fill")
+                        .tag(SidebarItem.playtime)
+                        .accessibilityIdentifier("sidebar.playtime")
+                    activityRow
                 }
                 // A bottle is a Wine prefix, so it belongs under a heading rather
                 // than being the whole sidebar. With one bottle this is the row
@@ -64,13 +86,14 @@ extension ContentView {
                             } else {
                                 BottleListEntry(
                                     bottle: bottle,
-                                    selected: $selected,
+                                    selected: selectedBottleURL,
                                     refresh: $triggerRefresh,
                                     toast: $toast
                                 )
                                 .accessibilityIdentifier("sidebar.bottle")
                             }
                         }
+                        .tag(SidebarItem.bottle(bottle.url))
                         .id(bottle.url)
                     }
                 }
@@ -83,7 +106,7 @@ extension ContentView {
             // there) is a choice nobody should have to make to find a game.
             .onChange(of: newlyCreatedBottleURL) { _, url in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    selected = url
+                    selected = url.map { .bottle($0) } ?? .home
                     withAnimation {
                         proxy.scrollTo(url, anchor: .center)
                     }
@@ -92,35 +115,52 @@ extension ContentView {
         }
     }
 
-    /// Selecting nothing means the library, not an empty pane: the library is
-    /// the home screen, and a person who has not picked a bottle has not made a
-    /// mistake.
-    var libraryRow: some View {
+    /// Opens the activity window rather than a page: what is running is worth
+    /// keeping in view beside a game, not instead of it. The dot says
+    /// something is running without opening anything.
+    var activityRow: some View {
         Button {
-            selected = nil
+            openWindow(id: WhiskyApp.activityWindowID)
         } label: {
-            Label("library.title", systemImage: "square.grid.2x2")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
+            HStack {
+                Label("sidebar.activity", systemImage: "waveform.path.ecg")
+                Spacer()
+                if library.isAnythingRunning {
+                    Circle()
+                        .fill(.green)
+                        .frame(width: 8, height: 8)
+                        .accessibilityLabel(Text("sidebar.activity.running"))
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .listRowBackground(
-            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(selected == nil ? AnyShapeStyle(.selection) : AnyShapeStyle(.clear))
+        .selectionDisabled(true)
+        .help("sidebar.activity.help")
+        .accessibilityIdentifier("sidebar.activity")
+    }
+
+    /// The selection as the bottle URL that the bottle rows and the run-file
+    /// sheet were written against: `nil` for anything that is not a bottle.
+    var selectedBottleURL: Binding<URL?> {
+        Binding(
+            get: { selected?.bottleURL },
+            set: { selected = $0.map { .bottle($0) } ?? .home }
         )
-        .accessibilityIdentifier("sidebar.library")
     }
 
     @ViewBuilder
     var detail: some View {
-        if let bottle = selected {
-            if let bottle = bottleVM.bottles.first(where: { $0.url == bottle }) {
-                BottleView(bottle: bottle)
+        if let url = selected?.bottleURL {
+            if let bottle = bottleVM.bottles.first(where: { $0.url == url }) {
+                let opensSettings = settingsRequest == url
+                BottleView(bottle: bottle, initialStage: opensSettings ? .config : nil)
                     .disabled(bottle.inFlight)
-                    .id(bottle.url)
+                    .id("\(bottle.url.path)|\(opensSettings ? settingsToken.uuidString : "")")
             }
         } else if bottleVM.countActive() > 0 {
-            LibraryView(selectedBottle: $selected, refresh: $triggerRefresh)
+            libraryDetail
         } else {
             if bottleVM.bottles.isEmpty || bottleVM.countActive() == 0, bottlesLoaded {
                 VStack {

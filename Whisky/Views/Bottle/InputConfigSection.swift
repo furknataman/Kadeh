@@ -29,6 +29,10 @@ struct InputConfigSection: View {
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
             VStack(alignment: .leading, spacing: 12) {
+                playStationToggle
+
+                Divider()
+
                 // Main toggle for controller compatibility mode
                 Toggle("Controller Compatibility Mode", isOn: $bottle.settings.controllerCompatibilityMode)
                     .help("""
@@ -126,6 +130,30 @@ struct InputConfigSection: View {
         }
         .onDisappear {
             controllerMonitor.stopMonitoring()
+        }
+    }
+
+    // MARK: - PlayStation controller
+
+    /// Needs a runtime with SDL; without it the pad would vanish, so the switch is off and says why.
+    private var playStationToggle: some View {
+        let supported = WinePlayStationPads.isSupported
+        return VStack(alignment: .leading, spacing: 2) {
+            Toggle(
+                String(localized: "input.playStationAsXbox"),
+                isOn: Binding(
+                    get: { supported && bottle.settings.playStationAsXbox },
+                    set: { bottle.settings.playStationAsXbox = $0 }
+                )
+            )
+            .disabled(!supported)
+            .accessibilityIdentifier("input.playStationAsXbox")
+
+            Text(supported
+                ? String(localized: "input.playStationAsXbox.help")
+                : String(localized: "input.playStationAsXbox.unsupported"))
+                .font(.caption)
+                .foregroundColor(.secondary)
         }
     }
 
@@ -238,7 +266,7 @@ struct InputConfigSection: View {
                 HStack(spacing: 4) {
                     Image(systemName: controller.typeBadge.sfSymbol)
                         .font(.caption)
-                    Text(controller.typeBadge.displayName)
+                    Text(typeName(controller.typeBadge))
                         .font(.caption)
                 }
                 .foregroundStyle(.secondary)
@@ -333,6 +361,11 @@ struct InputConfigSection: View {
     }
 
     // MARK: - Helpers
+
+    /// Brand names stay as they are; "Generic" is the one word to translate.
+    private func typeName(_ type: ControllerType) -> String {
+        type == .generic ? String(localized: "input.controller.generic") : type.displayName
+    }
 
     private func batterySymbol(level: Float, state: String?) -> String {
         if state == "charging" {

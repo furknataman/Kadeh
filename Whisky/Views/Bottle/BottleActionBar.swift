@@ -71,65 +71,25 @@ struct BottleActionBar: View {
             }
             .glassButton()
             .accessibilityIdentifier("bottle.openWinetricks")
+            Button("button.installFromArchive") {
+                installFromArchive()
+            }
+            .glassButton()
+            .help("button.installFromArchive.help")
+            .accessibilityIdentifier("bottle.installFromArchive")
+            .disabled(programLoading)
             Button("button.run") {
                 let panel = NSOpenPanel()
                 panel.allowsMultipleSelection = false
                 panel.canChooseDirectories = false
                 panel.canChooseFiles = true
-                panel.allowedContentTypes = [
-                    UTType.exe,
-                    UTType(exportedAs: "com.microsoft.msi-installer"),
-                    UTType(exportedAs: "com.microsoft.bat"),
-                    UTType(exportedAs: "com.microsoft.msix-package"),
-                    UTType(exportedAs: "com.microsoft.appx-package"),
-                    UTType(exportedAs: "com.microsoft.windows-internet-shortcut")
-                ]
+                panel.allowedContentTypes = Self.programTypes
                 panel.directoryURL = bottle.url.appending(path: "drive_c")
                 panel.begin { result in
                     programLoading = true
                     Task(priority: .userInitiated) {
-                        if result == .OK {
-                            if let url = panel.urls.first {
-                                do {
-                                    // Auto-detect launcher and apply fixes if compatibility mode enabled
-                                    // This completes synchronously on MainActor, ensuring settings are
-                                    // persisted before Wine.runProgram() reads them
-                                    LauncherFixes.detectAndApply(from: url, for: bottle)
-
-                                    Telemetry.capture(.firstProgramLaunchAttempted)
-                                    if url.pathExtension == "bat" {
-                                        try await Wine.runBatchFile(url: url, bottle: bottle)
-                                    } else {
-                                        try await Wine.runProgram(at: url, bottle: bottle)
-                                    }
-                                    await MainActor.run {
-                                        withAnimation {
-                                            toast = ToastData(
-                                                message: String(
-                                                    localized: "status.launched \(url.lastPathComponent)"
-                                                ),
-                                                style: .success
-                                            )
-                                        }
-                                    }
-                                } catch {
-                                    let errDesc = error.localizedDescription
-                                    await MainActor.run {
-                                        withAnimation {
-                                            toast = ToastData(
-                                                message: String(
-                                                    localized: "status.launchFailed \(errDesc)"
-                                                ),
-                                                style: .error,
-                                                autoDismiss: false
-                                            )
-                                        }
-                                    }
-                                }
-                                await MainActor.run {
-                                    programLoading = false
-                                }
-                            }
+                        if result == .OK, let url = panel.urls.first {
+                            await run(url)
                         } else {
                             await MainActor.run {
                                 programLoading = false
@@ -152,6 +112,180 @@ struct BottleActionBar: View {
             }
         }
         .padding()
+    }
+
+    private static let programTypes: [UTType] = [
+        UTType.exe,
+        UTType(exportedAs: "com.microsoft.msi-installer"),
+        UTType(exportedAs: "com.microsoft.bat"),
+        UTType(exportedAs: "com.microsoft.msix-package"),
+        UTType(exportedAs: "com.microsoft.appx-package"),
+        UTType(exportedAs: "com.microsoft.windows-internet-shortcut")
+    ]
+
+    /// Runs one program in the bottle and reports the outcome as a toast.
+    @discardableResult
+    private func run(_ url: URL) async -> Bool {
+        var launched = false
+        do {
+            // Auto-detect launcher and apply fixes if compatibility mode enabled
+            // This completes synchronously on MainActor, ensuring settings are
+            // persisted before Wine.runProgram() reads them
+            LauncherFixes.detectAndApply(from: url, for: bottle)
+
+            Telemetry.capture(.firstProgramLaunchAttempted)
+            if url.pathExtension == "bat" {
+                try await Wine.runBatchFile(url: url, bottle: bottle)
+            } else {
+                try await Wine.runProgram(at: url, bottle: bottle)
+            }
+            launched = true
+            await MainActor.run {
+                withAnimation {
+                    toast = ToastData(
+                        message: String(localized: "status.launched \(url.lastPathComponent)"),
+                        style: .success
+                    )
+                }
+            }
+        } catch {
+            let errDesc = error.localizedDescription
+            await MainActor.run {
+                withAnimation {
+                    toast = ToastData(
+                        message: String(localized: "status.launchFailed \(errDesc)"),
+                        style: .error,
+                        autoDismiss: false
+                    )
+                }
+            }
+        }
+        await MainActor.run {
+            programLoading = false
+        }
+        return launched
+    }
+
+    /// Picks an archive, unpacks it into the bottle and starts the installer inside.
+    private func installFromArchive() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = ArchiveInstaller.archiveExtensions.compactMap { UTType(filenameExtension: $0) }
+        panel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        panel.begin { result in
+            guard result == .OK, let archive = panel.urls.first else { return }
+            programLoading = true
+            Task(priority: .userInitiated) {
+                await installArchive(archive)
+                await onLaunch()
+            }
+        }
+    }
+
+    private func installArchive(_ archive: URL) async {
+        let name = archive.lastPathComponent
+        await MainActor.run {
+            // Archives can be several GB, so the toast stays until extraction ends.
+            withAnimation {
+                toast = ToastData(
+                    message: String(localized: "status.extracting \(name)"),
+                    style: .info,
+                    autoDismiss: false
+                )
+            }
+        }
+        let bottleURL = bottle.url
+        let extraction = await Task.detached(priority: .userInitiated) {
+            () -> Result<(folder: URL, programs: [URL]), Error> in
+            do {
+                let folder = try ArchiveInstaller.extract(archive, bottleURL: bottleURL)
+                return .success((folder, ArchiveInstaller.programs(in: folder)))
+            } catch {
+                return .failure(error)
+            }
+        }.value
+
+        switch extraction {
+        case .failure(let error):
+            let errDesc = error.localizedDescription
+            await MainActor.run {
+                withAnimation {
+                    toast = ToastData(
+                        message: String(localized: "status.extractFailed \(errDesc)"),
+                        style: .error,
+                        autoDismiss: false
+                    )
+                }
+                programLoading = false
+            }
+        case .success(let (folder, programs)):
+            await MainActor.run { withAnimation { toast = nil } }
+            if programs.isEmpty {
+                await MainActor.run {
+                    withAnimation {
+                        toast = ToastData(
+                            message: String(localized: "status.noProgramInArchive"),
+                            style: .error
+                        )
+                    }
+                    NSWorkspace.shared.activateFileViewerSelecting([folder])
+                    programLoading = false
+                }
+            } else {
+                // Runtimes and uninstallers never start the game, so they are
+                // left out of the automatic pick; the picker still shows them.
+                let usable = programs.filter { !ArchiveInstaller.isRedistributable($0, base: folder) }
+                if let first = usable.first, ArchiveInstaller.isInstaller(first) || usable.count == 1 {
+                    await start(first)
+                } else if let url = await chooseProgram(in: folder) {
+                    await start(url)
+                } else {
+                    await MainActor.run { programLoading = false }
+                }
+            }
+        }
+    }
+
+    /// Runs a program from an extracted archive. A setup gets a hint on where the
+    /// game shows up afterwards; anything else is the game itself, so it is
+    /// pinned first and lands in the library.
+    private func start(_ url: URL) async {
+        let installer = ArchiveInstaller.isInstaller(url)
+        if !installer {
+            await MainActor.run {
+                if !bottle.settings.pins.contains(where: { $0.url == url }) {
+                    bottle.settings.pins.append(PinnedProgram(name: url.deletingPathExtension().lastPathComponent, url: url))
+                }
+            }
+        }
+        guard await run(url), installer else { return }
+        await MainActor.run {
+            withAnimation {
+                toast = ToastData(
+                    message: String(localized: "status.installerStarted"),
+                    style: .info,
+                    autoDismiss: false
+                )
+            }
+        }
+    }
+
+    @MainActor
+    private func chooseProgram(in folder: URL) async -> URL? {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = Self.programTypes
+        panel.directoryURL = folder
+        panel.message = String(localized: "archive.chooseProgram")
+        return await withCheckedContinuation { continuation in
+            panel.begin { result in
+                continuation.resume(returning: result == .OK ? panel.urls.first : nil)
+            }
+        }
     }
 }
 

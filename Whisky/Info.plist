@@ -57,7 +57,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.franke.Whisky</string>
+			<string>com.furkan.kadeh</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>whisky</string>
@@ -73,9 +73,9 @@
 	<key>NSRemovableVolumesUsageDescription</key>
 	<string>Whisky needs access to removable volumes when bottles are stored on external drives.</string>
 	<key>PostHogProjectToken</key>
-	<string>phc_LJiR538eQO7W24OkTeGFyi3m53BzJCVKEY7c46Lodrh</string>
-	<key>SUFeedURL</key>
-	<string>https://frankea.github.io/Whisky/appcast.xml</string>
+	<string></string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
 	<key>SUPublicEDKey</key>
 	<string>rJHUOL+DnZ2+w0irWNhkZmt3SfYMyy1qcEPEmIGuszM=</string>
 	<key>UTExportedTypeDeclarations</key>

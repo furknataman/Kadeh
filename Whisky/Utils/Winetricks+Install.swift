@@ -125,7 +125,7 @@ extension Winetricks {
         process.arguments = arguments
         process.environment = [
             "WINEPREFIX": bottleURL.path(percentEncoded: false),
-            "WINE": "wine64",
+            "WINE": Wine.wineBinary.lastPathComponent,
             "PATH": [
                 WhiskyWineInstaller.binFolder.path(percentEncoded: false),
                 resourcesURL.path(percentEncoded: false),
@@ -133,7 +133,7 @@ extension Winetricks {
                 "/bin"
             ].joined(separator: ":"),
             "HOME": NSHomeDirectory()
-        ]
+        ].merging(OverlayRuntime.installed?.baseEnvironment ?? [:]) { own, _ in own }
         return process
     }
 

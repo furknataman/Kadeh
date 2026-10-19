@@ -691,6 +691,15 @@ public struct BottleSettings: Codable, Equatable {
         set { inputConfig.commandActsAsControl = newValue }
     }
 
+    /// Whether PlayStation controllers are presented to games as Xbox ones.
+    ///
+    /// Applied to the bottle's registry the next time it starts, and only on a
+    /// runtime that ships SDL.
+    public var playStationAsXbox: Bool {
+        get { inputConfig.playStationAsXbox }
+        set { inputConfig.playStationAsXbox = newValue }
+    }
+
     // MARK: - Custom DLL overrides
 
     /// User-defined DLL overrides for this bottle.
@@ -854,6 +863,19 @@ public struct BottleSettings: Codable, Equatable {
 
     // MARK: - EnvironmentBuilder Layer Populators
 
+    /// The Metal HUD layout the performance overlay asks for. The `MTL_HUD_*`
+    /// keys are Apple's ("Customizing the Metal Performance HUD").
+    static let compactMetalHUD: KeyValuePairs<String, String> = [
+        "MTL_HUD_ELEMENTS": "fps,frameinterval,gputime",
+        "MTL_HUD_SCALE": "0.15",
+        "MTL_HUD_OPACITY": "0.85",
+        "MTL_HUD_ALIGNMENT": "topright",
+        "MTL_HUD_DISABLE_MENU_BAR": "1",
+        // Unverified: a name found in D3DMetal's strings, meant to drop the
+        // Game Porting Toolkit block (Dispatch, Draw, Clear/Copy Resource).
+        "D3DM_SHOW_HUD_STATS": "0"
+    ]
+
     // swiftlint:disable cyclomatic_complexity function_body_length
 
     /// Populates the ``EnvironmentLayer/bottleManaged`` layer with settings-derived env vars.
@@ -871,11 +893,15 @@ public struct BottleSettings: Codable, Equatable {
     ///   - builtinD3D12IsD3DMetal: Whether the runtime's builtin `d3d12` is
     ///     D3DMetal's, which decides whether the DXVK and DXMT presets turn it
     ///     off. Defaults to whether the GPTK payload is deployed.
+    ///   - performanceOverlay: Whether the global performance overlay is on,
+    ///     which turns the compact Metal HUD on for every bottle. Defaults to
+    ///     the Settings switch.
     /// - Returns: Managed DLL override entries with their sources for the DLLOverrideResolver.
     public func populateBottleManagedLayer(
         builder: inout EnvironmentBuilder,
         resolvedBackend: GraphicsBackend? = nil,
-        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed()
+        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
+        performanceOverlay: Bool = PerformanceOverlay.isEnabled
     ) -> [(entry: DLLOverrideEntry, source: DLLOverrideSource)] {
         var managedDLLOverrides: [(entry: DLLOverrideEntry, source: DLLOverrideSource)] = []
 
@@ -967,8 +993,19 @@ public struct BottleSettings: Codable, Equatable {
             builder.set("WINEESYNC", "1", layer: .bottleManaged)
         }
 
-        if metalHud {
-            builder.set("MTL_HUD_ENABLED", "1", layer: .bottleManaged)
+        if metalHud || performanceOverlay {
+            builder.set(
+                "MTL_HUD_ENABLED", "1", layer: .bottleManaged,
+                reason: metalHud ? nil : "Performance overlay"
+            )
+        }
+        // The overlay's HUD is the compact one: frame rate and timing only, small,
+        // in the top-right corner, its own panel taking the top-left. The bottle's
+        // own Metal HUD switch alone keeps Apple's full HUD.
+        if performanceOverlay {
+            for (key, value) in BottleSettings.compactMetalHUD {
+                builder.set(key, value, layer: .bottleManaged, reason: "Performance overlay")
+            }
         }
 
         if metalTrace {

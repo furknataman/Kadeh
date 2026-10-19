@@ -48,6 +48,12 @@ extension Wine {
     ///     D3DMetal's, which decides whether the DXVK and DXMT presets turn it
     ///     off. Defaults to whether the GPTK payload is deployed, read once so
     ///     every layer of this launch agrees.
+    ///   - overlayRuntime: The installed ``OverlayRuntime``, if that is the layout
+    ///     installed. Adds the engine's dylib paths, the backend's renderer set
+    ///     and the sync variables, and leaves DXMT's preset out, since DXMT is a
+    ///     builtin set there.
+    ///   - launcherBackend: Set when this process is a launcher's: on the overlay
+    ///     runtime it runs this backend's renderer set, with sync off.
     /// - Returns: The fully resolved environment dictionary for passing to a Wine process.
     @MainActor
     public static func constructWineEnvironment(
@@ -57,7 +63,9 @@ extension Wine {
         programSettings: ProgramSettings? = nil,
         gameProfileEnvironment: [String: String] = [:],
         recommendedBackend: GraphicsBackend? = nil,
-        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed()
+        builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
+        overlayRuntime: OverlayRuntime? = .installed,
+        launcherBackend: GraphicsBackend? = nil
     ) -> [String: String] {
         var builder = EnvironmentBuilder()
         var dllResolver = DLLOverrideResolver(managed: [], bottleCustom: [], programCustom: [])
@@ -66,6 +74,15 @@ extension Wine {
         builder.set("WINEPREFIX", bottle.url.path, layer: .base)
         builder.set("WINEDEBUG", "fixme-all", layer: .base)
         builder.set("GST_DEBUG", "1", layer: .base)
+        for (key, value) in overlayRuntime?.programEnvironment ?? [:] {
+            builder.set(key, value, layer: .base, reason: "Overlay runtime")
+        }
+        if overlayRuntime != nil {
+            dllResolver.managed.append((
+                entry: DLLOverrideEntry(dllName: "winemenubuilder.exe", mode: .disabled),
+                source: .launcher("Overlay runtime")
+            ))
+        }
 
         // Layer 2: Platform -- macOS compatibility fixes
         // Apply fixes from the MacOSCompatibilityFixes registry with reason strings.
@@ -96,7 +113,7 @@ extension Wine {
             builder: &builder, resolvedBackend: recommendedBackend,
             builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal
         )
-        dllResolver.managed.append(contentsOf: managedOverrides)
+        dllResolver.managed.append(contentsOf: managedOverrides.filter { overlayRuntime == nil || $0.source != .dxmt })
 
         // DXVK reads its config from DXVK_CONFIG_FILE or the process working
         // directory, and the working directory of a launch is never the bottle
@@ -119,6 +136,13 @@ extension Wine {
 
         // Input compatibility (bottleManaged layer -- input settings are bottle-managed toggles)
         bottle.settings.populateInputCompatibilityLayer(builder: &builder)
+
+        // Metal 4 is opt-in on the overlay runtime's D3DMetal beta, whose Metal 4
+        // path ends some titles quietly. Beats the bottle toggle, which defaults
+        // on; a program can still turn it on.
+        if overlayRuntime != nil {
+            builder.set("D3DM_MTL4", "0", layer: .gameProfile, reason: "Overlay runtime")
+        }
 
         // Layer 5: Game profile -- GameDB variant environment for this launch.
         // Beats bottle/launcher defaults, loses to anything the user set.
@@ -150,8 +174,16 @@ extension Wine {
                 frameGeneration: bottle.settings.frameGeneration,
                 recommendedBackend: recommendedBackend,
                 builtinD3D12IsD3DMetal: builtinD3D12IsD3DMetal,
+                overlayRuntime: overlayRuntime != nil,
                 builder: &builder,
                 dllResolver: &dllResolver
+            )
+        }
+
+        if let overlayRuntime {
+            populateOverlayLayer(
+                overlayRuntime, for: bottle, programOverrides: programOverrides,
+                recommendedBackend: recommendedBackend, launcherBackend: launcherBackend, builder: &builder
             )
         }
 
@@ -194,6 +226,39 @@ extension Wine {
         return Set(presets.map(\.dllName)).sorted().map { DLLOverrideEntry(dllName: $0, mode: .builtin) }
     }
 
+    /// The overlay runtime's renderer set and sync, at the featureRuntime layer,
+    /// so the bottle's and the platform's sync defaults cannot leak through.
+    ///
+    /// The renderer set is the backend the launch resolves to, or
+    /// `launcherBackend` for a launcher's process. Sync is the program's or the
+    /// bottle's setting, except in a bottle that hosts a launcher.
+    @MainActor
+    static func populateOverlayLayer(
+        _ overlay: OverlayRuntime, for bottle: Bottle, programOverrides: ProgramOverrides?,
+        recommendedBackend: GraphicsBackend?, launcherBackend: GraphicsBackend?,
+        builder: inout EnvironmentBuilder
+    ) {
+        let choice = programOverrides?.graphicsBackend ?? bottle.settings.graphicsBackend
+        let backend = launcherBackend ?? (choice == .recommended
+            ? recommendedBackend ?? GraphicsBackendResolver.resolve(overlayRuntime: overlay)
+            : choice)
+
+        // ponytail: Steam's CEF hangs under msync/esync on this engine, and every
+        // process on one wineserver has to agree on sync, so a bottle hosting a
+        // launcher runs without it, its games included. msync for games needs the
+        // wineserver restarted between the client's session and the game's
+        // (Highball's approach); not built.
+        let hostsLauncher = launcherBackend != nil || bottle.settings.detectedLauncher != nil
+            || SteamLibrary.detectInstall(bottleURL: bottle.url) != nil
+        let sync = hostsLauncher ? EnhancedSync.none : programOverrides?.enhancedSync ?? bottle.settings.enhancedSync
+
+        let environment = overlay.rendererEnvironment(for: backend)
+            .merging(OverlayRuntime.syncEnvironment(sync)) { _, sync in sync }
+        for (key, value) in environment {
+            builder.set(key, value, layer: .featureRuntime, reason: "Overlay runtime")
+        }
+    }
+
     /// Applies per-program overrides to the programUser layer of the builder.
     ///
     /// Each non-nil field in the overrides sets the corresponding environment variable(s)
@@ -205,11 +270,14 @@ extension Wine {
     /// and whether the reset union puts it back. Defaults to whether the GPTK
     /// payload is deployed. `recommendedBackend` is what a program set to
     /// `.recommended` gets; `nil` asks ``GraphicsBackendResolver``.
+    /// `overlayRuntime` leaves DXMT's preset out: on that layout DXMT is a
+    /// builtin set, and a native override would only reach stale copies.
     static func applyProgramOverrides(
         _ overrides: ProgramOverrides,
         frameGeneration: Bool = false,
         recommendedBackend: GraphicsBackend? = nil,
         builtinD3D12IsD3DMetal: Bool = GPTKImporter.isDeployed(),
+        overlayRuntime: Bool = false,
         builder: inout EnvironmentBuilder,
         dllResolver: inout DLLOverrideResolver
     ) {
@@ -260,7 +328,9 @@ extension Wine {
                 // layer DXMT's preset on top — last-append-wins restores n,b for
                 // the DXMT trio and b for winemetal. DXVK/wined3d env must not leak.
                 dllResolver.programCustom.append(contentsOf: translationReset)
-                dllResolver.programCustom.append(contentsOf: dxmtPreset)
+                if !overlayRuntime {
+                    dllResolver.programCustom.append(contentsOf: dxmtPreset)
+                }
                 builder.remove("DXVK_HUD", layer: .programUser)
                 builder.remove("DXVK_ASYNC", layer: .programUser)
                 builder.remove("WINED3DMETAL", layer: .programUser)

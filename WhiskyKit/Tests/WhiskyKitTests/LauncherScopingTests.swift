@@ -103,7 +103,7 @@ final class LauncherScopingTests {
             at: steam(in: bottle), args: applaunch ? ["-applaunch", "1174180"] : ["-silent"], bottle: bottle,
             programOverrides: plan, overridesApplyToDescendants: applaunch,
             recommendedBackend: recommended, builtinD3D12IsD3DMetal: payload,
-            overrideWriter: recorder.writer, importer: recorder.importer
+            overrideWriter: recorder.writer, importer: recorder.importer, overlayRuntime: nil
         )
     }
 
@@ -272,7 +272,7 @@ final class LauncherScopingTests {
 
         _ = try await Wine.prepareProgramLaunch(
             at: launcher, bottle: bottle, recommendedBackend: .d3dMetal, builtinD3D12IsD3DMetal: true,
-            overrideWriter: recorder.writer, importer: recorder.importer
+            overrideWriter: recorder.writer, importer: recorder.importer, overlayRuntime: nil
         )
 
         #expect(recorder.programScopes.filter { $0.lowercased() == "launcher.exe" }.count == 1)

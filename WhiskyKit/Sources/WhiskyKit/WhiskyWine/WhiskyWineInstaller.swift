@@ -102,8 +102,11 @@ public class WhiskyWineInstaller {
 
     /// The URL to the Wine binary directory.
     ///
-    /// This folder contains `wine64`, `wineserver`, and other Wine executables.
-    public static let binFolder: URL = libraryFolder.appending(path: "Wine").appending(path: "bin")
+    /// This folder contains `wine64` (`wine` on an ``OverlayRuntime``),
+    /// `wineserver`, and other Wine executables.
+    public static var binFolder: URL {
+        OverlayRuntime.installed?.binFolder ?? libraryFolder.appending(path: "Wine").appending(path: "bin")
+    }
 
     /// Checks whether WhiskyWine is currently installed and usable.
     ///
@@ -120,7 +123,11 @@ public class WhiskyWineInstaller {
     /// Whether a usable runtime exists under `folder` — both the version plist
     /// and the `wine64` binary the app actually executes. Factored out of
     /// ``isWhiskyWineInstalled()`` so it can be tested against a temp directory.
+    /// An ``OverlayRuntime`` ships no plist and is present when its loader is.
     static func isRuntimePresent(inLibraryFolder folder: URL) -> Bool {
+        if OverlayRuntime(libraryFolder: folder) != nil {
+            return true
+        }
         let versionPlist = folder.appending(path: "WhiskyWineVersion").appendingPathExtension("plist")
         guard whiskyWineInfo(at: versionPlist) != nil else { return false }
 
@@ -139,7 +146,10 @@ public class WhiskyWineInstaller {
     ///
     /// - Returns: `true` only if the D3DMetal payload is present on disk.
     public static func isD3DMetalInstalled() -> Bool {
-        isD3DMetalPresent(inLibraryFolder: libraryFolder)
+        if let overlay = OverlayRuntime.installed {
+            return overlay.isAvailable(.d3dMetal)
+        }
+        return isD3DMetalPresent(inLibraryFolder: libraryFolder)
     }
 
     /// Whether the D3DMetal payload exists under `folder`. Factored out of
@@ -335,6 +345,9 @@ public class WhiskyWineInstaller {
     ///   - A boolean indicating whether an update is available.
     ///   - The remote version if an update is available, or `0.0.0` otherwise.
     public static func shouldUpdateWhiskyWine() async -> (Bool, SemanticVersion) {
+        // An overlay runtime is installed by hand, and taking the update would
+        // delete it for a WhiskyWine download.
+        guard OverlayRuntime.installed == nil else { return (false, SemanticVersion(0, 0, 0)) }
         let versionPlistURL = DistributionConfig.versionPlistURL
         let localVersion = whiskyWineVersion()
 
@@ -406,7 +419,10 @@ public class WhiskyWineInstaller {
     /// without it a d3dMetal bottle silently degrades to wined3d at launch
     /// (issue #146).
     public static func isBackendAvailable(_ backend: GraphicsBackend) -> Bool {
-        backendAvailability(
+        if let overlay = OverlayRuntime.installed {
+            return overlay.isAvailable(backend)
+        }
+        return backendAvailability(
             backend,
             runtimeInfo: whiskyWineInfo(),
             d3dMetalInstalled: isD3DMetalInstalled(),
@@ -436,9 +452,15 @@ public class WhiskyWineInstaller {
 
     /// Reads the full version record from the installed WhiskyWine runtime.
     ///
+    /// An ``OverlayRuntime`` ships no plist; its record is synthesized from the
+    /// engine (see ``OverlayRuntime/versionInfo``).
+    ///
     /// - Returns: The decoded ``WhiskyWineVersion``, or `nil` if WhiskyWine is
     ///   not installed or the version file cannot be read.
     public static func whiskyWineInfo() -> WhiskyWineVersion? {
+        if let overlay = OverlayRuntime.installed {
+            return overlay.versionInfo
+        }
         let versionPlist = libraryFolder
             .appending(path: "WhiskyWineVersion")
             .appendingPathExtension("plist")

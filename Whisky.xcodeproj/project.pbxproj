@@ -97,6 +97,15 @@
 		C1A2B3C4E5F60601A9B0C1D8 /* AudioConfigSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0C1D9 /* AudioConfigSection.swift */; };
 		C1A2B3C4E5F60601A9B0F2D8 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0F2D9 /* LibraryView.swift */; };
 		C1A2B3C4E5F60601A9B0F1D8 /* LibraryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0F1D9 /* LibraryCard.swift */; };
+		D4DE5A11B0C0FFEE00000001 /* GamePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DE5A11B0C0FFEE00000002 /* GamePageView.swift */; };
+		B7AC71E10000000000000001 /* PlaytimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AC71E10000000000000002 /* PlaytimeView.swift */; };
+		B7AC71E10000000000000003 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AC71E10000000000000004 /* ActivityView.swift */; };
+		E5A1A0000000000000000011 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1A0000000000000000012 /* HomeView.swift */; };
+		E5A1A0000000000000000021 /* GameArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1A0000000000000000022 /* GameArt.swift */; };
+		E5A1A0000000000000000031 /* ContentView+Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1A0000000000000000032 /* ContentView+Library.swift */; };
+		E5A1A0000000000000000041 /* LibraryModel+Launch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1A0000000000000000042 /* LibraryModel+Launch.swift */; };
+		E5A1A0000000000000000051 /* TurkishPatchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A1A0000000000000000052 /* TurkishPatchSheet.swift */; };
+		D4DE5A11B0C0FFEE00000003 /* GameSavesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DE5A11B0C0FFEE00000004 /* GameSavesSection.swift */; };
 		C1A2B3C4E5F60601A9B0D1D8 /* DiscordConfigSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0D1D9 /* DiscordConfigSection.swift */; };
 		C1A2B3C4E5F60601A9B0C2D0 /* AudioTroubleshootingWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0C2D1 /* AudioTroubleshootingWizardView.swift */; };
 		C1A2B3C4E5F60601A9B0C2D2 /* AudioDeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A2B3C4E5F60601A9B0C2D3 /* AudioDeviceListView.swift */; };
@@ -124,6 +133,7 @@
 		EB58FB552A499896002DC184 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = EB58FB542A499896002DC184 /* SemanticVersion */; };
 		EEA5A2462A31DD65008274AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA5A2452A31DD65008274AE /* AppDelegate.swift */; };
 		F1A2B3C4E5F60801A9B0C1D1 /* ControllerMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4E5F60801A9B0C1D0 /* ControllerMonitor.swift */; };
+		F1A2B3C4E5F62601A9B0C1D1 /* PerformanceOverlayPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4E5F62601A9B0C1D0 /* PerformanceOverlayPanel.swift */; };
 		F748991F03BA464CFCDA99F3 /* StatusToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E2D80EAABBB985BAED42548 /* StatusToast.swift */; };
 		FBD19F7BAD838BE3ABB2CCC2 /* LaunchResult+Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2516958D60EC8937A2AF71 /* LaunchResult+Toast.swift */; };
 		G1A2B3C4E5F60901A9B0C1D0 /* DependencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = G1A2B3C4E5F60901A9B0C1D1 /* DependencyManager.swift */; };
@@ -295,6 +305,15 @@
 		C1A2B3C4E5F60601A9B0C1D9 /* AudioConfigSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConfigSection.swift; sourceTree = "<group>"; };
 		C1A2B3C4E5F60601A9B0F2D9 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LibraryView.swift; path = Whisky/Views/Library/LibraryView.swift; sourceTree = SOURCE_ROOT; };
 		C1A2B3C4E5F60601A9B0F1D9 /* LibraryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LibraryCard.swift; path = Whisky/Views/Library/LibraryCard.swift; sourceTree = SOURCE_ROOT; };
+		D4DE5A11B0C0FFEE00000002 /* GamePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GamePageView.swift; path = Whisky/Views/Library/GamePageView.swift; sourceTree = SOURCE_ROOT; };
+		B7AC71E10000000000000002 /* PlaytimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlaytimeView.swift; path = Whisky/Views/Playtime/PlaytimeView.swift; sourceTree = SOURCE_ROOT; };
+		B7AC71E10000000000000004 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ActivityView.swift; path = Whisky/Views/Activity/ActivityView.swift; sourceTree = SOURCE_ROOT; };
+		E5A1A0000000000000000012 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = Whisky/Views/Home/HomeView.swift; sourceTree = SOURCE_ROOT; };
+		E5A1A0000000000000000022 /* GameArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameArt.swift; path = Whisky/Views/Home/GameArt.swift; sourceTree = SOURCE_ROOT; };
+		E5A1A0000000000000000032 /* ContentView+Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Library.swift"; sourceTree = "<group>"; };
+		E5A1A0000000000000000042 /* LibraryModel+Launch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LibraryModel+Launch.swift"; sourceTree = "<group>"; };
+		E5A1A0000000000000000052 /* TurkishPatchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TurkishPatchSheet.swift; path = Whisky/Views/Library/TurkishPatchSheet.swift; sourceTree = SOURCE_ROOT; };
+		D4DE5A11B0C0FFEE00000004 /* GameSavesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameSavesSection.swift; path = Whisky/Views/Library/GameSavesSection.swift; sourceTree = SOURCE_ROOT; };
 		C1A2B3C4E5F60601A9B0D1D9 /* DiscordConfigSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscordConfigSection.swift; sourceTree = "<group>"; };
 		C1A2B3C4E5F60601A9B0C2D1 /* AudioTroubleshootingWizardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTroubleshootingWizardView.swift; sourceTree = "<group>"; };
 		C1A2B3C4E5F60601A9B0C2D3 /* AudioDeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDeviceListView.swift; sourceTree = "<group>"; };
@@ -323,6 +342,7 @@
 		C1A2B3C4E5F60601A9B0A1D9 /* UITestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestSupport.swift; sourceTree = "<group>"; };
 		EEA5A2452A31DD65008274AE /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F1A2B3C4E5F60801A9B0C1D0 /* ControllerMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerMonitor.swift; sourceTree = "<group>"; };
+		F1A2B3C4E5F62601A9B0C1D0 /* PerformanceOverlayPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceOverlayPanel.swift; sourceTree = "<group>"; };
 		G1A2B3C4E5F60901A9B0C1D1 /* DependencyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyManager.swift; sourceTree = "<group>"; };
 		AB5DECAF20260818000000D5 /* RemediationExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemediationExecutor.swift; sourceTree = "<group>"; };
 		AB5DECAF20260818000000D1 /* QuickLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLaunch.swift; sourceTree = "<group>"; };
@@ -457,6 +477,13 @@
 				C1A2B3C4E5F60601A9B0C1D9 /* AudioConfigSection.swift */,
 				C1A2B3C4E5F60601A9B0F2D9 /* LibraryView.swift */,
 				C1A2B3C4E5F60601A9B0F1D9 /* LibraryCard.swift */,
+				D4DE5A11B0C0FFEE00000002 /* GamePageView.swift */,
+				B7AC71E10000000000000002 /* PlaytimeView.swift */,
+				B7AC71E10000000000000004 /* ActivityView.swift */,
+				E5A1A0000000000000000012 /* HomeView.swift */,
+				E5A1A0000000000000000022 /* GameArt.swift */,
+				E5A1A0000000000000000052 /* TurkishPatchSheet.swift */,
+				D4DE5A11B0C0FFEE00000004 /* GameSavesSection.swift */,
 				C1A2B3C4E5F60601A9B0D1D9 /* DiscordConfigSection.swift */,
 				6E40498029CCA8B0006E3F1B /* BottleView.swift */,
 				C1A2B3C4E5F60601A9B0B1D9 /* BottleActionBar.swift */,
@@ -564,6 +591,7 @@
 				6E40495529CCA19C006E3F1B /* WhiskyApp.swift */,
 				6E40495729CCA19C006E3F1B /* ContentView.swift */,
 				C1A2B3C4E5F60601A9B0A3D9 /* ContentView+Sidebar.swift */,
+				E5A1A0000000000000000032 /* ContentView+Library.swift */,
 				6E064B1329DD331F00D9A2D2 /* SparkleView.swift */,
 				6E7C07BF2AAF570100F6E66B /* FileOpenView.swift */,
 				FADF69F903E9EA676A27FC69 /* Common */,
@@ -579,6 +607,7 @@
 				6E50D98229CD6066008C39F6 /* BottleVM.swift */,
 				B1A2C3D4E5F60302A9B0C1D2 /* ProcessesViewModel.swift */,
 				D7B1C2E3F4A50801A9B0E1F2 /* LibraryModel.swift */,
+				E5A1A0000000000000000042 /* LibraryModel+Launch.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -601,6 +630,7 @@
 				AB5DECAF20260818000000D5 /* RemediationExecutor.swift */,
 				AB5DECAF20260818000000D1 /* QuickLaunch.swift */,
 				F1A2B3C4E5F60801A9B0C1D0 /* ControllerMonitor.swift */,
+				F1A2B3C4E5F62601A9B0C1D0 /* PerformanceOverlayPanel.swift */,
 				I1A2B3C4E5F61201A9B0C1D1 /* SteamDownloadMonitor.swift */,
 				2B94A3D15B907CF55C906C9A /* AppSteamClientDriver.swift */,
 			);
@@ -1074,6 +1104,15 @@
 				C1A2B3C4E5F60601A9B0C1D8 /* AudioConfigSection.swift in Sources */,
 				C1A2B3C4E5F60601A9B0F2D8 /* LibraryView.swift in Sources */,
 				C1A2B3C4E5F60601A9B0F1D8 /* LibraryCard.swift in Sources */,
+				D4DE5A11B0C0FFEE00000001 /* GamePageView.swift in Sources */,
+				B7AC71E10000000000000001 /* PlaytimeView.swift in Sources */,
+				B7AC71E10000000000000003 /* ActivityView.swift in Sources */,
+				E5A1A0000000000000000011 /* HomeView.swift in Sources */,
+				E5A1A0000000000000000021 /* GameArt.swift in Sources */,
+				E5A1A0000000000000000031 /* ContentView+Library.swift in Sources */,
+				E5A1A0000000000000000041 /* LibraryModel+Launch.swift in Sources */,
+				E5A1A0000000000000000051 /* TurkishPatchSheet.swift in Sources */,
+				D4DE5A11B0C0FFEE00000003 /* GameSavesSection.swift in Sources */,
 				C1A2B3C4E5F60601A9B0D1D8 /* DiscordConfigSection.swift in Sources */,
 				C1A2B3C4E5F60601A9B0C2D0 /* AudioTroubleshootingWizardView.swift in Sources */,
 				C1A2B3C4E5F60601A9B0C2D2 /* AudioDeviceListView.swift in Sources */,
@@ -1088,6 +1127,7 @@
 				E1A2B3C4E5F60701A9B0C2D4 /* GameConfigPreviewSheet.swift in Sources */,
 				E1A2B3C4E5F60701A9B0C3D0 /* GameConfigBannerView.swift in Sources */,
 				F1A2B3C4E5F60801A9B0C1D1 /* ControllerMonitor.swift in Sources */,
+				F1A2B3C4E5F62601A9B0C1D1 /* PerformanceOverlayPanel.swift in Sources */,
 				G1A2B3C4E5F60901A9B0C1D0 /* DependencyManager.swift in Sources */,
 				AB5DECAF20260818000000D4 /* RemediationExecutor.swift in Sources */,
 				AB5DECAF20260818000000D0 /* QuickLaunch.swift in Sources */,
@@ -1273,13 +1313,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Whisky/Whisky.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 55;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Whisky/Preview Content\"";
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1295,8 +1335,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 3.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.Whisky;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh;
+				PRODUCT_NAME = Kadeh;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -1311,13 +1351,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Whisky/Whisky.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 55;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Whisky/Preview Content\"";
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1333,8 +1373,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 3.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.Whisky;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh;
+				PRODUCT_NAME = Kadeh;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -1347,10 +1387,10 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1358,7 +1398,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.WhiskyCmd;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyCmd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1373,10 +1413,10 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1384,7 +1424,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.WhiskyCmd;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyCmd;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1398,11 +1438,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = WhiskyThumbnail/WhiskyThumbnail.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 55;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1417,7 +1457,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 3.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.Whisky.WhiskyThumbnail;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyThumbnail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1433,11 +1473,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_ENTITLEMENTS = WhiskyThumbnail/WhiskyThumbnail.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 55;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = Z7JS58F8U3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1452,7 +1492,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 3.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.Whisky.WhiskyThumbnail;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyThumbnail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1469,7 +1509,7 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = WhiskyUITests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.WhiskyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
@@ -1484,7 +1524,7 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = WhiskyUITests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.franke.WhiskyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.furkan.kadeh.WhiskyUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;

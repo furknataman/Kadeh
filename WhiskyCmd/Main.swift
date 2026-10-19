@@ -256,6 +256,13 @@ extension Whisky {
                 args.remove(at: terminator)
             }
 
+            // A runtime install drops the deployed D3DMetal copy. The app redeploys
+            // from Settings; the CLI must do it here or D3DMetal launches fall back.
+            // The overlay runtime carries its own D3DMetal; nothing is deployed into it.
+            if OverlayRuntime.installed == nil, !GPTKImporter.isDeployed() {
+                GPTKImporter.deployStoredPayloadIfCapable()
+            }
+
             var bottlesList = BottleData()
             let bottles = bottlesList.loadBottles()
 

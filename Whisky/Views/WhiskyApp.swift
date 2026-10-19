@@ -37,6 +37,9 @@ struct WhiskyApp: App {
     /// Scene id for the main window, used to reopen it from the menu-bar extra.
     static let mainWindowID = "main"
 
+    /// Scene id for the Etkinlik window: running bottles and programs.
+    static let activityWindowID = "activity"
+
     /// Opt-in: show a menu-bar extra and keep Whisky running after the main
     /// window closes (see `AppDelegate.applicationShouldTerminateAfterLastWindowClosed`).
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = false
@@ -235,6 +238,14 @@ struct WhiskyApp: App {
                 .keyboardShortcut("T", modifiers: [.command, .shift])
             }
         }
+        Window(String(localized: "activity.title"), id: Self.activityWindowID) {
+            ActivityView()
+                .environmentObject(BottleVM.shared)
+        }
+        .defaultSize(width: 560, height: 520)
+        .commands {
+            ActivityCommands()
+        }
         Settings {
             SettingsView()
         }
@@ -382,6 +393,22 @@ struct WhiskyApp: App {
                     }
                 }
             }
+        }
+    }
+}
+
+/// The Window menu item that opens Etkinlik. A `Commands` of its own because
+/// `openWindow` is read from the environment, which the `App` struct has not.
+private struct ActivityCommands: Commands {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some Commands {
+        CommandGroup(before: .windowList) {
+            Button("activity.menu") {
+                openWindow(id: WhiskyApp.activityWindowID)
+            }
+            .keyboardShortcut("a", modifiers: [.command, .option])
+            Divider()
         }
     }
 }

@@ -26,7 +26,17 @@ struct ContentView: View {
     @EnvironmentObject var bottleVM: BottleVM
     @Binding var showSetup: Bool
 
-    @State var selected: URL?
+    @State var selected: SidebarItem? = .home
+    /// Shared by the home screen, the library, game pages and the sidebar's
+    /// activity dot, so there is one set of Steam pollers and one answer to
+    /// "is it running".
+    @StateObject var library = LibraryModel()
+    /// The game pages pushed over the home screen, library or playtime list, by entry id.
+    @State var gamePath: [String] = []
+    /// A bottle whose settings were asked for from a launch warning, opened
+    /// on its configuration rather than its programs.
+    @State var settingsRequest: URL?
+    @State var settingsToken = UUID()
     @State var showBottleCreation: Bool = false
     @State var bottlesLoaded: Bool = false
     @State var showBottleSelection: Bool = false
@@ -37,6 +47,7 @@ struct ContentView: View {
 
     @State var toast: ToastData?
     @State var corruptRegistryBackupURL: URL?
+    @Environment(\.openWindow) var openWindow
 
     var body: some View {
         NavigationSplitView {
@@ -45,6 +56,13 @@ struct ContentView: View {
             detail
         }
         .toast($toast)
+        .libraryLaunchAlerts(model: library, bottles: activeBottles, openSettings: openBottleSettings)
+        .task(id: libraryReloadTrigger) {
+            await library.reload(bottles: activeBottles)
+        }
+        .onDisappear {
+            library.stopTracking()
+        }
         .onReceive(NotificationCenter.default.publisher(for: .zombieProcessesCleaned)) { notification in
             if let count = notification.userInfo?["count"] as? Int, count > 0 {
                 withAnimation {
@@ -127,7 +145,7 @@ struct ContentView: View {
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     bottleVM.loadBottles()
-                    if let bottle = bottleVM.bottles.first(where: { $0.url == selected }) {
+                    if let bottle = bottleVM.bottles.first(where: { $0.url == selected?.bottleURL }) {
                         Task { await bottle.updateInstalledPrograms() }
                     }
                     triggerRefresh.toggle()
@@ -152,14 +170,24 @@ struct ContentView: View {
         .sheet(item: $openedFileURL) { url in
             FileOpenView(
                 fileURL: url,
-                currentBottle: selected,
+                currentBottle: selected?.bottleURL,
                 bottles: bottleVM.bottles,
                 toast: $toast
             )
         }
-        .onChange(of: selected) { oldValue, _ in
+        .onChange(of: selected) { oldValue, newValue in
+            // A game page belongs to the screen it was opened from.
+            gamePath = []
+            // A click on the sidebar's empty space clears the selection;
+            // the detail shows the home screen then, so the sidebar says so.
+            if newValue == nil {
+                DispatchQueue.main.async { selected = .home }
+            }
+            if newValue?.bottleURL != settingsRequest {
+                settingsRequest = nil
+            }
             // Check if previous bottle had running processes
-            guard let oldURL = oldValue,
+            guard let oldURL = oldValue?.bottleURL,
                   let oldBottle = bottleVM.bottles.first(where: { $0.url == oldURL })
             else { return }
 
@@ -203,9 +231,9 @@ struct ContentView: View {
             // registry reset the scan offers everything back (issue #145).
             bottleVM.scanForOrphanedBottles()
 
-            // Deliberately does not select a bottle. The library is the landing
-            // screen, and restoring a prefix selection would put the plumbing in
-            // front of the thing people opened the app to do.
+            // Deliberately does not select a bottle. The home screen is the
+            // landing screen, and restoring a prefix selection would put the
+            // plumbing in front of the thing people opened the app to do.
 
             // Skip the first-launch setup sheet and update check under UI testing:
             // tests run without a runtime, so this would otherwise drop a modal

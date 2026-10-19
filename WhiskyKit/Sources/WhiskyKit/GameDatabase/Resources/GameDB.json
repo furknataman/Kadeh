@@ -569,6 +569,85 @@
       }
     },
     {
+      "id": "blur",
+      "title": "Blur",
+      "aliases": [],
+      "subtitle": "Bizarre Creations / Activision",
+      "store": "other",
+      "steamAppId": 42640,
+      "rating": "broken",
+      "exeNames": [
+        "blur.exe"
+      ],
+      "pathPatterns": [
+        "blur"
+      ],
+      "antiCheat": null,
+      "constraints": {
+        "cpuArchitectures": [
+          "arm64"
+        ],
+        "minMacOSVersion": "15.0.0",
+        "minWineVersion": "9.0"
+      },
+      "variants": [
+        {
+          "id": "wined3d",
+          "label": "WineD3D (OpenGL)",
+          "isDefault": true,
+          "whenToUse": "Default; the DXVK d3d9 path shows only a black screen",
+          "rationale": [
+            "Under both DXVK builds every frame after the intro is black, although frames are presented",
+            "Wine's own d3d9 over OpenGL draws the menu correctly; only the backend differs from the bottle defaults"
+          ],
+          "settings": {
+            "graphicsBackend": "wined3d"
+          },
+          "environmentVariables": {},
+          "dllOverrides": [],
+          "winetricksVerbs": [],
+          "testedWith": {
+            "lastTestedAt": "2026-10-16T00:00:00Z",
+            "macOSVersion": "27.0.1",
+            "wineVersion": "10.0",
+            "whiskyVersion": "3.7.0",
+            "cpuArchitecture": "arm64"
+          }
+        }
+      ],
+      "notes": [
+        "Delisted in 2013; owners can still install it from Steam (app 42640) or a retail disc",
+        "32-bit DirectX 9 game"
+      ],
+      "knownIssues": [
+        {
+          "description": "Black screen with DXVK (d9vk) after the intro: frames are presented but nothing reaches the window, not even DXVK's own HUD",
+          "severity": "major",
+          "workaround": "Use the WineD3D variant (default)"
+        },
+        {
+          "description": "Around 13 FPS in races on an M3 Max with WineD3D; the game thread waits on WineD3D's render thread. msync, the lowest detail setting, csmt=0 and x87sidecar did not change it",
+          "severity": "critical"
+        },
+        {
+          "description": "The intro videos play in slow motion and look frozen: the Bink decoder is x87 code, which Rosetta runs very slowly",
+          "severity": "major",
+          "workaround": "Rename UI\\movies\\atvi.bik and UI\\movies\\BizarreSplash.bik in the game folder (PCGamingWiki's skip-intro fix)"
+        },
+        {
+          "description": "Split screen: the keyboard and the first controller are both player 1, so the controller cannot join",
+          "severity": "minor",
+          "workaround": "An xinput1_3.dll proxy in the game folder that moves controllers up one slot (x360ce's PAD1 = -1), with xinput1_3 set to native for Blur.exe"
+        }
+      ],
+      "provenance": {
+        "source": "community-reference",
+        "author": "Kadeh",
+        "lastUpdated": "2026-10-17T00:00:00Z",
+        "referenceURL": null
+      }
+    },
+    {
       "id": "celeste",
       "title": "Celeste",
       "aliases": [
@@ -3199,7 +3278,6 @@
           ],
           "addedFiles": [
             "asset_archive/calypso.SMTR",
-            "asset_archive/toc.yedek",
             "SpidermanRemastered_YamaKaldır.exe"
           ],
           "fixup": "spiderManTocMerge"

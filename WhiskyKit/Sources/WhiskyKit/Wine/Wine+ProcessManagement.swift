@@ -46,6 +46,7 @@ public extension Wine {
             process.executableURL = WhiskyWineInstaller.binFolder.appending(path: "wineserver")
             process.arguments = ["-k0"]
             process.environment = ["WINEPREFIX": bottle.url.path]
+                .merging(OverlayRuntime.installed?.baseEnvironment ?? [:]) { own, _ in own }
             process.standardOutput = FileHandle.nullDevice
             process.standardError = FileHandle.nullDevice
             process.terminationHandler = { probe in

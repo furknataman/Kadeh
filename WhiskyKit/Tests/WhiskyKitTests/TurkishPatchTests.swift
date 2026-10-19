@@ -34,7 +34,6 @@ final class TurkishPatchTests: XCTestCase {
         XCTAssertEqual(first.modifiedFiles, ["asset_archive/toc"])
         XCTAssertEqual(first.addedFiles, [
             "asset_archive/calypso.SMTR",
-            "asset_archive/toc.yedek",
             "SpidermanRemastered_YamaKaldır.exe"
         ])
         XCTAssertEqual(first.fixup, .spiderManTocMerge)
