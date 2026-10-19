@@ -91,7 +91,9 @@ struct GameLogoOrTitle: View {
     @State private var loaded = false
 
     var body: some View {
-        Group {
+        // A ZStack rather than a Group: an empty Group has no view to run `.task` on,
+        // so the logo would never load.
+        ZStack(alignment: .leading) {
             if let logo {
                 logo
                     .resizable()
