@@ -238,11 +238,33 @@ public final class SteamClientOrchestrator: ObservableObject {
         }
         driver.startClient(steamExe: steamExe, for: game)
 
-        if await watch.waitForAny(of: ["steam.exe"], timeout: timing.clientReadyTimeout) {
+        if await waitForClientOnHost() {
             driver.clientDidBecomeReady()
             return
         }
         throw SteamOrchestratorError.clientTimeout
+    }
+
+    /// Waits for `steam.exe` on the host's own process list, never with a Wine
+    /// process. On a cold prefix the client starts only once Wine's boot has
+    /// settled, and a `tasklist` every poll kept the boot busy: the wait ran
+    /// out first and the game was never handed over, while Steam came up after.
+    ///
+    /// ponytail: any bottle's `steam.exe` counts, so Steam already running in
+    /// another bottle ends the wait early; `-applaunch` then starts this client.
+    /// The library's own tracking still lists processes with Wine every
+    /// ``Timing/trackingInterval``; that gap has been long enough for a boot to
+    /// settle, and is the next suspect if a cold start is ever slow again.
+    private func waitForClientOnHost() async -> Bool {
+        let deadline = Date(timeIntervalSinceNow: timing.clientReadyTimeout)
+        repeat {
+            if await driver.hostWineImageNames().contains("steam.exe") {
+                return true
+            }
+            try? await Task.sleep(for: timing.pollInterval)
+            guard !Task.isCancelled else { return false }
+        } while Date() < deadline
+        return false
     }
 
     private func isClientRunning() async -> Bool {
