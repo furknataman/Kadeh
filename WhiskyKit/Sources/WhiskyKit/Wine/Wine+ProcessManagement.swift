@@ -80,6 +80,10 @@ public extension Wine {
     /// - Throws: An error if `tasklist.exe` cannot be started.
     @MainActor
     static func listProcesses(for bottle: Bottle) async throws -> [WineProcess] {
+        // A bottle without a prefix has no processes, and running Wine in it
+        // would create one, racing the launch that is creating it. That race
+        // once left a prefix with an empty syswow64.
+        guard isPrefixBootstrapped(bottle) else { return [] }
         let output = try await runWineWithBottle(
             ["tasklist.exe", "/FO", "CSV"], bottle: bottle, createsLogFile: false
         )

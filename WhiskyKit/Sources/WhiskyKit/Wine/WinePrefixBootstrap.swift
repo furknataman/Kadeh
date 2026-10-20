@@ -91,14 +91,61 @@ public extension Wine {
     static func prepareBottlePrefix(
         bottle: Bottle, bootstrapper: PrefixBootstrapper = { try await bootstrapPrefix(bottle: $0) }
     ) async throws {
-        guard !isPrefixBootstrapped(bottle) else { return }
+        if !isPrefixBootstrapped(bottle) {
+            logger.info("Bootstrapping the Wine prefix of bottle '\(bottle.settings.name, privacy: .public)'")
+            try await bootstrapper(bottle)
 
-        logger.info("Bootstrapping the Wine prefix of bottle '\(bottle.settings.name, privacy: .public)'")
-        try await bootstrapper(bottle)
-
-        guard isPrefixBootstrapped(bottle) else {
-            throw WinePrefixBootstrapError.incomplete
+            guard isPrefixBootstrapped(bottle) else {
+                throw WinePrefixBootstrapError.incomplete
+            }
         }
+
+        if isWow64Missing(prefix: bottle.url) {
+            logger.info("Restoring the 32-bit DLLs of bottle '\(bottle.settings.name, privacy: .public)'")
+            try await repairWow64(bottle: bottle)
+        }
+    }
+
+    /// The runtime's 32-bit Windows DLLs, which a complete prefix carries copies of in `syswow64`.
+    static var runtimeI386Folder: URL {
+        WhiskyWineInstaller.binFolder.deletingLastPathComponent()
+            .appending(path: "lib").appending(path: "wine").appending(path: "i386-windows")
+    }
+
+    /// Whether a prefix's 32-bit half was left out: a `syswow64` folder with no
+    /// `kernel32.dll` in it, while the runtime has one to put there.
+    ///
+    /// A prefix whose creation another Wine process raced (the Processes page
+    /// polls `tasklist.exe` in the selected bottle) was seen ending up so:
+    /// `system32` full, `syswow64` empty, and every 32-bit program dying with
+    /// "could not load kernel32.dll".
+    static func isWow64Missing(prefix: URL, runtimeI386: URL = runtimeI386Folder) -> Bool {
+        let syswow64 = prefix.appending(path: "drive_c").appending(path: "windows").appending(path: "syswow64")
+        let fileManager = FileManager.default
+        var isDirectory: ObjCBool = false
+        return fileManager.fileExists(atPath: syswow64.path(percentEncoded: false), isDirectory: &isDirectory)
+            && isDirectory.boolValue
+            && !fileManager.fileExists(atPath: syswow64.appending(path: "kernel32.dll").path(percentEncoded: false))
+            && fileManager.fileExists(atPath: runtimeI386.appending(path: "kernel32.dll").path(percentEncoded: false))
+    }
+
+    /// Puts the runtime's 32-bit DLLs into an empty `syswow64` and lets
+    /// `wineboot` finish the rest.
+    ///
+    /// `wineboot` cannot mend such a prefix by itself, `--init` or `-u`: the
+    /// 32-bit half of its work runs as a 32-bit process, which cannot start
+    /// without those DLLs. Copying them first, as prefix creation does, gets
+    /// it past that. Files already there are kept.
+    @MainActor
+    static func repairWow64(bottle: Bottle, runtimeI386: URL = runtimeI386Folder) async throws {
+        let syswow64 = bottle.url.appending(path: "drive_c").appending(path: "windows").appending(path: "syswow64")
+        let fileManager = FileManager.default
+        for name in try fileManager.contentsOfDirectory(atPath: runtimeI386.path(percentEncoded: false)) {
+            let target = syswow64.appending(path: name)
+            guard !fileManager.fileExists(atPath: target.path(percentEncoded: false)) else { continue }
+            try fileManager.copyItem(at: runtimeI386.appending(path: name), to: target)
+        }
+        try await runWine(["wineboot", "-u"], bottle: bottle)
     }
 
     /// Creates a bottle's Wine prefix the way the app does for a new bottle.

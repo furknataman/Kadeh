@@ -156,4 +156,19 @@ final class ProgramPrefixBootstrapTests {
             _ = try await program.writeTerminalScript(args: [], overrideWriter: { _, _ in }, bootstrapper: { _ in })
         }
     }
+
+    @Test("A syswow64 left without kernel32 counts as missing, a filled or absent one does not")
+    func detectsEmptySyswow64() throws {
+        let runtime = tempRoot.appending(path: "i386-windows")
+        let prefix = tempRoot.appending(path: "prefix")
+        let syswow64 = prefix.appending(path: "drive_c").appending(path: "windows").appending(path: "syswow64")
+        try FileManager.default.createDirectory(at: runtime, withIntermediateDirectories: true)
+        try Data().write(to: runtime.appending(path: "kernel32.dll"))
+
+        #expect(!Wine.isWow64Missing(prefix: prefix, runtimeI386: runtime))
+        try FileManager.default.createDirectory(at: syswow64, withIntermediateDirectories: true)
+        #expect(Wine.isWow64Missing(prefix: prefix, runtimeI386: runtime))
+        try Data().write(to: syswow64.appending(path: "kernel32.dll"))
+        #expect(!Wine.isWow64Missing(prefix: prefix, runtimeI386: runtime))
+    }
 }
