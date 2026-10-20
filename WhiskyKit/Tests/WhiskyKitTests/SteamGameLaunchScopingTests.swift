@@ -258,7 +258,18 @@ final class SteamGameLaunchScopingTests {
 
         try await prepareDirectLaunch(game, bottle, recorder: recorder)
 
-        #expect(recorder.programScopes == ["Game.exe"])
+        #expect(recorder.programScopes == ["Game.exe", "DXSETUP.exe"])
+    }
+
+    @Test("Every launch keeps mscoree away from DirectX's setup")
+    func directXSetupSkipsManagedDirectXCheck() async throws {
+        let bottle = try makeBottle()
+        let game = try makeExecutable("Games/Some Game/Game.exe", in: bottle)
+        let recorder = ScopeRecorder()
+
+        try await prepareDirectLaunch(game, bottle, recorder: recorder)
+
+        #expect(recorder.overrides(for: .program("DXSETUP.exe"))?["mscoree"] == "")
     }
 
     // MARK: - Rockstar titles (findings 6 and 7)

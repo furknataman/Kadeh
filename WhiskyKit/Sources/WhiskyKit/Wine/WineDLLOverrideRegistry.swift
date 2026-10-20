@@ -243,6 +243,14 @@ public extension Wine {
             disablingD3D12(in: launcherSet(nil))
         )
 
+        // DirectX's June 2010 redistributable, which Steam, the Gameforge
+        // client and many installers run on their own, asks .NET whether
+        // Managed DirectX is in use. Wine Mono answers LoadLibraryShim with an
+        // invalid handle, the setup ends "Internal or unsupported error" (-9),
+        // and Gameforge waited on it at 98% for good. Without mscoree the
+        // check is skipped and the setup succeeds.
+        scopes.add(["DXSETUP.exe"], "mscoree=")
+
         try await writer(bottle, scopes.entries)
     }
 
