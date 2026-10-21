@@ -1,25 +1,19 @@
 <div align="center">
 
-  # Whisky 🥃
+  # Kadeh 🥃
   *Wine but a bit stronger*
 
-  > **Active community fork.** The original [whisky-app/whisky](https://github.com/whisky-app/whisky)
-  > was archived on April 9, 2025 with a final maintenance notice. This fork, maintained by
-  > [@frankea](https://github.com/frankea), continues development — addressing the backlog of
-  > upstream issues and adding new functionality. Not affiliated with the original project or
-  > getwhisky.app.
+  > Based on [frankea/Whisky](https://github.com/frankea/Whisky) and the original [whisky-app/whisky](https://github.com/whisky-app/whisky); not affiliated with getwhisky.app.
 
-  ![](https://img.shields.io/github/actions/workflow/status/frankea/Whisky/CI.yml?style=for-the-badge&label=CI)
-  [![](https://img.shields.io/codecov/c/github/frankea/Whisky?style=for-the-badge&logo=codecov&label=Coverage&flag=whiskykit)](https://codecov.io/gh/frankea/Whisky)
-  [![](https://img.shields.io/github/downloads/frankea/Whisky/total?style=for-the-badge&logo=github&label=Downloads)](https://github.com/frankea/Whisky/releases)
-  [![](https://img.shields.io/github/downloads/frankea/Whisky/latest/total?style=for-the-badge&label=Latest)](https://github.com/frankea/Whisky/releases/latest)
-  [![](https://img.shields.io/github/issues/frankea/Whisky?style=for-the-badge)](https://github.com/frankea/Whisky/issues)
-  [![Documentation](https://img.shields.io/badge/Documentation-DocC-blue?style=for-the-badge)](https://frankea.github.io/Whisky/documentation/whiskykit/)
+  ![](https://img.shields.io/github/actions/workflow/status/furknataman/Kadeh/CI.yml?style=for-the-badge&label=CI)
+  [![](https://img.shields.io/github/downloads/furknataman/Kadeh/total?style=for-the-badge&logo=github&label=Downloads)](https://github.com/furknataman/Kadeh/releases)
+  [![](https://img.shields.io/github/downloads/furknataman/Kadeh/latest/total?style=for-the-badge&label=Latest)](https://github.com/furknataman/Kadeh/releases/latest)
+  [![](https://img.shields.io/github/issues/furknataman/Kadeh?style=for-the-badge)](https://github.com/furknataman/Kadeh/issues)
 </div>
 
 ## Overview
 
-Whisky provides a clean and easy-to-use graphical wrapper for Wine built in native SwiftUI. You can make and manage bottles, install and run Windows apps and games, and unlock the full potential of your Mac with no technical knowledge required.
+Kadeh provides a clean and easy-to-use graphical wrapper for Wine built in native SwiftUI. You can make and manage bottles, install and run Windows apps and games, and unlock the full potential of your Mac with no technical knowledge required.
 
 <img width="650" alt="Whisky in action" src="./images/demo.gif">
 
@@ -41,7 +35,7 @@ Whisky provides a clean and easy-to-use graphical wrapper for Wine built in nati
 
 ## Key Features
 
-- **Wine 11.0** - Latest stable Wine with improved compatibility and networking
+- **Wine 10.0 (Sikarugir)** - An x86_64 Wine engine for Windows apps and games
 - **DXMT & DXVK Graphics** - DirectX 11 through native Metal translation (DXMT) out of the box, with DXVK over MoltenVK as the universal fallback
 - **Launcher Compatibility** - Built-in support for Steam, Epic, EA App, Rockstar, Battle.net, and more
 - **Controller Support** - SDL environment variable controls for gamepad detection and mapping issues
@@ -51,64 +45,62 @@ Whisky provides a clean and easy-to-use graphical wrapper for Wine built in nati
 ## System Requirements
 
 - **CPU**: Apple Silicon (M-series chips)
-- **OS**: macOS Sequoia 15.0 or later
+- **OS**: macOS 27 or later
+- **Rosetta 2**: Required by the x86_64 Wine engine; Kadeh offers to install it on first launch
 
 ## Installation
 
-### Homebrew (recommended)
+There is no Homebrew cask for Kadeh.
 
-```sh
-brew install --cask frankea/whisky/whisky
-```
+1. Download the latest **[Kadeh-X.Y.Z.dmg](https://github.com/furknataman/Kadeh/releases/latest)**.
+2. Open the DMG and drag **Kadeh.app** onto the **Applications** shortcut.
+3. Open Kadeh from **Applications**. The app and DMG are Developer ID signed and notarized, so Gatekeeper should accept them normally.
+4. Complete first-launch setup. Kadeh offers to install Rosetta 2 if necessary, then downloads its engine (~465 MB download, ~1.2 GB on disk).
 
-This taps [frankea/homebrew-whisky](https://github.com/frankea/homebrew-whisky) and installs the latest signed/notarized DMG. `brew upgrade --cask` picks up new releases.
+The engine contains Wine 10.0 (Sikarugir), D3DMetal 4.0 beta 2 from Apple's Game Porting Toolkit, DXMT, DXVK d9vk, and MoltenVK, as defined by Highball's [`dist/engine-manifest.json`](dist/engine-manifest.json). It is installed in `~/Library/Application Support/com.furkan.kadeh/Libraries`. Kadeh reads `releases/latest/download/WhiskyWineVersion.plist`, downloads `releases/download/vX.Y.Z/Libraries.tar.gz`, and checks the archive's SHA-256 before installation.
 
-> The default `brew install --cask whisky` still installs the **archived original** (last release April 2025) and always will until that cask is updated. Use the qualified `frankea/whisky/whisky` form to get this fork.
+D3DMetal is redistributed unmodified under the Game Porting Toolkit licence, which permits non-commercial distribution only. Kadeh is GPL-3.0 software and must remain free. Wine and the other engine components use LGPL, MIT, zlib, or Apache licences; the engine includes `THIRD-PARTY-NOTICES.txt` and its manifest.
 
-### Manual
+Some antivirus products, including Symantec Endpoint Protection, may delete Wine DLLs as false positives. If games fail after installation, exclude `~/Library/Application Support/com.furkan.kadeh` and `~/Library/Containers/com.furkan.kadeh`, then reinstall the engine.
 
-1. Download the latest **[Whisky-X.Y.Z.dmg](https://github.com/frankea/Whisky/releases/latest)** (signed and notarized — Gatekeeper-approved).
-2. Open the DMG and drag **Whisky.app** to **/Applications**.
-3. Launch Whisky. On first run it downloads the Wine runtime (~330 MB) and sets up your default bottle.
-
-In-app updates are delivered through Sparkle from `https://frankea.github.io/Whisky/appcast.xml`.
+In-app updates use Sparkle and `https://github.com/furknataman/Kadeh/releases/latest/download/appcast.xml`. Automatic update checks are off by default.
 
 ### Migrating from the original Whisky
 
-The original [whisky-app/whisky](https://github.com/whisky-app/whisky) was archived on **April 9, 2025** with a final maintenance notice. If you're running it today, you're on a stale build with no path forward for new fixes. This fork picks up where the upstream left off — version `3.0.1` shipped 54 requirements covering the 10 categories of upstream issue tracking (#40–#50).
+Kadeh can reference bottles created by the archived original [whisky-app/whisky](https://github.com/whisky-app/whisky).
 
 To switch:
 
-1. Install this fork: `brew install --cask frankea/whisky/whisky` or follow the manual steps above.
-2. Open it and choose **File → Migrate from the Original Whisky**. It finds the bottles the original app left in `~/Library/Containers/com.isaacmarovitz.Whisky/` and imports the ones you pick. Bottles are referenced **in place** — nothing is moved or copied — so the original app keeps working if you'd like to keep it around.
+1. Install Kadeh using the DMG above.
+2. Open it and choose **File → Migrate from the Original Whisky…**. It finds the bottles the original app left in `~/Library/Containers/com.isaacmarovitz.Whisky/` and imports the ones you pick. Bottles are referenced **in place** — nothing is moved or copied — so the original app keeps working.
 3. *(Optional)* Once you're happy, remove the original app: drag **/Applications/Whisky.app** to the Trash, or `brew uninstall --cask whisky` if you installed it via Homebrew. Your bottles stay put.
 
-The original app uses a different bundle identifier (`com.franke.Whisky` here vs. `com.isaacmarovitz.Whisky`), which is why bottles aren't shared automatically. The old **Bottle → Export** / **File → Import Bottle** route still works if you'd rather move bottles by hand or onto another Mac. With no critical bottles, you can skip migration entirely — the new app creates a fresh bottle on first launch.
+The original app uses a different bundle identifier (`com.furkan.kadeh` for Kadeh vs. `com.isaacmarovitz.Whisky`), which is why bottles are not shared automatically. The **Bottle → Export** / **File → Import Bottle** route also remains available for manual transfers.
 
 ## Uninstalling
 
-Dragging **Whisky.app** to the Trash (or `brew uninstall --cask frankea/whisky/whisky`) removes the app but leaves the Wine runtime, your bottles, and app data behind — by design, so reinstalling doesn't re-download ~330 MB or lose your bottles.
+Dragging **Kadeh.app** to the Trash removes the app but leaves the engine, your bottles, and app data behind.
 
-> ⚠️ **Back up your bottles first if you want to keep them.** Removing the container below deletes every bottle stored in its default location. Bottles you created in a custom folder live wherever you put them — check **Bottle → Reveal in Finder** before deleting anything.
+> ⚠️ **Back up your bottles first if you want to keep them.** Removing `~/Library/Containers/com.furkan.kadeh` deletes every bottle under the default `Bottles` directory. Bottles you created in a custom folder live wherever you put them — check **Bottle → Reveal in Finder** before deleting anything.
 
-To remove Whisky **completely**, delete the app and then these paths (all under `~/Library`):
+To remove Kadeh **completely**, delete the app and then these paths:
 
 ```sh
 # 1. The app itself
-rm -rf "/Applications/Whisky.app"          # or: brew uninstall --cask frankea/whisky/whisky
+rm -rf "/Applications/Kadeh.app"
 
 # 2. Bottles + bottle list (default bottle location is inside this container)
-rm -rf ~/Library/Containers/com.franke.Whisky
-rm -rf ~/Library/Containers/com.franke.Whisky.WhiskyThumbnail
+rm -rf ~/Library/Containers/com.furkan.kadeh
+rm -rf ~/Library/Containers/com.furkan.kadeh.WhiskyThumbnail
 
-# 3. The Wine runtime (~330 MB) and other app support
-rm -rf ~/Library/Application\ Support/com.franke.Whisky
+# 3. The engine (~1.2 GB) and other app support
+rm -rf ~/Library/Application\ Support/com.furkan.kadeh
 
 # 4. Caches, logs, preferences, and saved state
-rm -rf ~/Library/Caches/com.franke.Whisky
-rm -rf ~/Library/Logs/com.franke.Whisky
-rm -rf ~/Library/HTTPStorages/com.franke.Whisky
-rm -f  ~/Library/Preferences/com.franke.Whisky.plist
+rm -rf ~/Library/Caches/com.furkan.kadeh
+rm -rf ~/Library/Logs/com.furkan.kadeh
+rm -rf ~/Library/HTTPStorages/com.furkan.kadeh
+rm -f  ~/Library/Preferences/com.furkan.kadeh.plist
 ```
 
 If you also installed bottles in a **custom location**, delete those folders too. Migrated bottles that still belong to the original app live under `~/Library/Containers/com.isaacmarovitz.Whisky` and are left untouched by the steps above.
@@ -175,22 +167,12 @@ actually mean.
 
 ### Test coverage
 
-The Coverage badge above is scoped to the **`whiskykit` flag** — line
-coverage of the framework that holds the bottle, Wine, GameDB, and
-PE-parser logic, measured by `swift test --enable-code-coverage` per
-[`.github/workflows/CI.yml`](.github/workflows/CI.yml). The blended
-project-wide number on the [Codecov dashboard](https://codecov.io/gh/frankea/Whisky)
-reads much lower because it averages in the SwiftUI app target, which
-only receives best-effort UI-test coverage. Read the badge as
-"WhiskyKit unit-test coverage," not full-app coverage.
+WhiskyKit unit tests cover the framework that holds the bottle, Wine, GameDB,
+and PE-parser logic. See [`.github/workflows/CI.yml`](.github/workflows/CI.yml)
+for the current CI configuration.
 
 WhiskyUITests gives behavioural coverage of the SwiftUI surface (toolbar,
-create-bottle sheet, fixture-dependent flows). CI now runs them with
-`-enableCodeCoverage YES` and uploads the resulting app-target coverage to
-Codecov under a separate `whiskyapp` flag (best-effort — the upload never gates
-CI). Because UI tests exercise far less of the app than the unit tests do of
-WhiskyKit, expect the app-target number to read lower than the WhiskyKit badge
-above.
+create-bottle sheet, and fixture-dependent flows).
 
 ---
 

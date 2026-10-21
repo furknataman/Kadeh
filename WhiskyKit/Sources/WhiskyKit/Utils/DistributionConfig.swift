@@ -19,17 +19,18 @@
 import Foundation
 
 public enum DistributionConfig {
-    /// Base URL for GitHub Pages distribution
-    public static let baseURL = "https://frankea.github.io/Whisky"
+    /// Kadeh's GitHub repository
+    public static let repositoryURL = "https://github.com/furknataman/Kadeh"
 
-    /// URL for the WhiskyWine version plist file
-    public static let versionPlistURL = "\(baseURL)/WhiskyWineVersion.plist"
+    /// Files every release carries, read from whichever release is newest.
+    /// The app's update feed (`SUFeedURL` in Info.plist) lives here too.
+    public static let latestReleaseURL = "\(repositoryURL)/releases/latest/download"
+
+    /// URL for the engine version plist file
+    public static let versionPlistURL = "\(latestReleaseURL)/WhiskyWineVersion.plist"
 
     /// Base URL for GitHub Releases downloads
-    public static let releasesBaseURL = "https://github.com/frankea/Whisky/releases/download"
-
-    /// URL for the Sparkle appcast feed
-    public static let appcastURL = "\(baseURL)/appcast.xml"
+    public static let releasesBaseURL = "\(repositoryURL)/releases/download"
 
     /// Constructs the download URL for Wine Libraries from GitHub Releases
     /// - Parameter version: The version string (e.g., "2.5.0")

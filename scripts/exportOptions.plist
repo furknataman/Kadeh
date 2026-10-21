@@ -5,9 +5,11 @@
     <key>method</key>
     <string>developer-id</string>
     <key>teamID</key>
-    <string>Z7JS58F8U3</string>
+    <string>PY8XQ9L8AA</string>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
+    <key>signingCertificate</key>
+    <string>Developer ID Application</string>
     <key>destination</key>
     <string>export</string>
 </dict>

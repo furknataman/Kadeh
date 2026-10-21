@@ -76,8 +76,10 @@
 	<string></string>
 	<key>SUEnableAutomaticChecks</key>
 	<false/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/furknataman/Kadeh/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>rJHUOL+DnZ2+w0irWNhkZmt3SfYMyy1qcEPEmIGuszM=</string>
+	<string>INCeMPIAqW1kUAr80Q2j3WWduwUpgaiWff/0NUT9SeM=</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

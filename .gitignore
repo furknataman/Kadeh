@@ -116,3 +116,12 @@ scripts/WhiskyAudioTest.exe
 # A build's Discord application id. The id belongs to whoever owns the
 # application users see, so it is supplied per build rather than committed.
 WhiskyKit/Sources/WhiskyKit/Discord/Local/client-id.txt
+
+# Signing and API credentials must never be committed
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+.env
+/build-cli/
