@@ -423,6 +423,9 @@ extension GameSavesSection {
                     title: entry.name, bottleURL: entry.bottleURL,
                     gameFolder: url.deletingLastPathComponent(), changedSince: started
                 )
+            case .switchGame:
+                // The emulator keeps its saves itself; the game page shows no saves for it.
+                return SaveSearch(title: entry.name, bottleURL: entry.bottleURL)
             }
         }.value
     }

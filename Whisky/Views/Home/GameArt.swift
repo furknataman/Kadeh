@@ -82,6 +82,9 @@ struct GameHeroArt: View {
 }
 
 /// The game's own logo, or its name set large when Steam left no logo.
+///
+/// Nothing for a Switch game with a cover: Kadeh draws the name into that
+/// cover, so the art behind already carries it.
 struct GameLogoOrTitle: View {
     let item: LibraryEntry
     var maxWidth: CGFloat = 380
@@ -89,6 +92,10 @@ struct GameLogoOrTitle: View {
 
     @State private var logo: Image?
     @State private var loaded = false
+
+    private var artShowsName: Bool {
+        item.source == .nintendoSwitch && item.heroURL != nil
+    }
 
     var body: some View {
         // A ZStack rather than a Group: an empty Group has no view to run `.task` on,
@@ -100,7 +107,7 @@ struct GameLogoOrTitle: View {
                     .scaledToFit()
                     .frame(maxWidth: maxWidth, maxHeight: maxHeight, alignment: .leading)
                     .shadow(color: .black.opacity(0.4), radius: 10, y: 2)
-            } else if loaded || item.logoURL == nil {
+            } else if (loaded || item.logoURL == nil) && !artShowsName {
                 Text(item.name)
                     .font(.system(size: 40, weight: .bold))
                     .foregroundStyle(.white)

@@ -48,7 +48,7 @@ struct LibraryView: View {
         Group {
             if model.rows.isEmpty {
                 if model.hasLoaded {
-                    LibraryEmptyState(bottles: bottles, openBottle: openBottle)
+                    LibraryEmptyState(bottles: bottles, openBottle: openBottle, addSwitchGames: addSwitchGames)
                 }
             } else {
                 grid
@@ -56,7 +56,16 @@ struct LibraryView: View {
         }
         .navigationTitle("library.title")
         .searchable(text: $search, prompt: Text("library.search"))
-        .toolbar { sortMenu }
+        .toolbar {
+            sortMenu
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: addSwitchGames) {
+                    Label("switch.add", systemImage: "gamecontroller")
+                        .labelStyle(.titleAndIcon)
+                }
+                .help("switch.add")
+            }
+        }
         .sheet(item: $patchRow) { row in
             TurkishPatchSheet(row: row, bottle: bottles.first { $0.url == row.item.bottleURL })
         }
@@ -79,6 +88,10 @@ struct LibraryView: View {
             }
             .accessibilityIdentifier("library.sort")
         }
+    }
+
+    private func addSwitchGames() {
+        model.switchSetup = SwitchSetupRequest(notice: nil)
     }
 
     private var grid: some View {
@@ -126,14 +139,21 @@ struct LibraryView: View {
                 Button("library.card.unpin", role: .destructive) { unpin(url, in: row.item.bottleURL) }
             }
         }
+        if case let .switchGame(file) = row.item.launch {
+            Button("button.showInFinder") {
+                NSWorkspace.shared.activateFileViewerSelecting([file])
+            }
+        }
         if model.hasTurkishPatch(row.item) {
             Button("library.card.turkishPatch") { patchRow = row }
         }
         // Per-program settings live inside the bottle's own navigation stack,
         // which the library cannot push onto, so this is as close as the menu
-        // gets without a deep link into it.
-        Button("library.card.configure") {
-            openBottle(row.item.bottleURL)
+        // gets without a deep link into it. A Switch game has no bottle.
+        if row.item.source != .nintendoSwitch {
+            Button("library.card.configure") {
+                openBottle(row.item.bottleURL)
+            }
         }
     }
 
@@ -150,6 +170,9 @@ struct LibraryView: View {
 struct LibraryEmptyState: View {
     let bottles: [Bottle]
     let openBottle: (URL) -> Void
+    /// Opens the Switch setup sheet; offered with or without a bottle,
+    /// since Switch games need none.
+    let addSwitchGames: () -> Void
 
     var body: some View {
         ContentUnavailableView {
@@ -161,6 +184,10 @@ struct LibraryEmptyState: View {
                 Button("library.empty.pinHint") { openBottle(first.url) }
                     .buttonStyle(.borderedProminent)
             }
+            Button(action: addSwitchGames) {
+                Label("switch.add", systemImage: "gamecontroller")
+            }
+            .buttonStyle(.bordered)
         }
     }
 }

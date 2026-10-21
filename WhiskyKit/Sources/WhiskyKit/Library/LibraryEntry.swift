@@ -38,6 +38,8 @@ public struct LibrarySourceID: RawRepresentable, Hashable, Sendable, Codable {
     public static let steam = LibrarySourceID(rawValue: "steam")
     /// Programs an installer put a desktop or Start menu shortcut to.
     public static let shortcut = LibrarySourceID(rawValue: "shortcut")
+    /// Nintendo Switch games in the folder the user chose, run in the Switch emulator.
+    public static let nintendoSwitch = LibrarySourceID(rawValue: "switch")
 }
 
 /// One thing a person can launch, whatever put it there.
@@ -49,6 +51,8 @@ public struct LibraryEntry: Identifiable, Hashable, Sendable {
         case program(URL)
         /// A Steam app, run through the client so Steam sees it as a launch.
         case steam(appID: Int)
+        /// A Nintendo Switch game file (`.nsp` or `.xci`), run in the Switch emulator.
+        case switchGame(URL)
     }
 
     public let id: String
@@ -65,6 +69,9 @@ public struct LibraryEntry: Identifiable, Hashable, Sendable {
     public let logoURL: URL?
     /// Portrait box art, for rows of covers.
     public let portraitURL: URL?
+    /// The folder the entry runs in: its Wine bottle, or for a Switch game the
+    /// emulator's data folder.
+    // ponytail: no optional, every bottle lookup simply finds nothing for a Switch entry.
     public let bottleURL: URL
     public let source: LibrarySourceID
     public let launch: Launch

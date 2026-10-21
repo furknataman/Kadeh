@@ -31,6 +31,10 @@ struct SettingsView: View {
     @AppStorage(SaveBackupStore.rootDefaultsKey) private var saveBackupRoot = ""
     /// A backup folder refused because it and a game's save folder are inside one another.
     @State private var refusedBackupFolder = false
+    @State private var showSwitchSetup = false
+    /// How many of the Switch setup steps are done, read when the window
+    /// shows and after the setup sheet closes.
+    @State private var switchStepsDone = 0
     @AppStorage(Telemetry.consentDefaultsKey) private var telemetryConsentRaw: String = Telemetry.ConsentState
         .undecided.rawValue
 
@@ -97,6 +101,18 @@ struct SettingsView: View {
                 Toggle("settings.toggle.whiskywine.updates", isOn: $checkWhiskyWineUpdates)
             }
             GPTKSettingsSection()
+            // Only a summary: the setup sheet is the one place Switch games are set up.
+            Section("switch.settings.title") {
+                LabeledContent {
+                    Button("switch.settings.open") { showSwitchSetup = true }
+                } label: {
+                    if switchStepsDone == SwitchEmulator.Step.allCases.count {
+                        Text("switch.settings.ready")
+                    } else {
+                        Text("switch.settings.progress \(switchStepsDone)")
+                    }
+                }
+            }
             Section("settings.privacy") {
                 Toggle("settings.toggle.telemetry", isOn: telemetryOptIn)
                     .help("setup.telemetry.consent.help")
@@ -110,6 +126,14 @@ struct SettingsView: View {
         } message: {
             Text("settings.saves.refused.message")
         }
+        .sheet(isPresented: $showSwitchSetup, onDismiss: countSwitchSteps) {
+            SwitchSetupSheet(notice: nil)
+        }
+        .onAppear(perform: countSwitchSteps)
+    }
+
+    private func countSwitchSteps() {
+        switchStepsDone = SwitchEmulator.Step.allCases.filter(SwitchEmulator.isDone).count
     }
 
     private var saveBackupFolder: URL {

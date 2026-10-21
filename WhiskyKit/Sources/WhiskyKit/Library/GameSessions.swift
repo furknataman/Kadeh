@@ -130,6 +130,24 @@ public final class GameSessions: ObservableObject {
         startWatcher(for: session, extraNames: executables)
     }
 
+    /// A game Kadeh runs as its own macOS process: running from the start, ended by ``finished(_:at:)``.
+    ///
+    /// No watcher: the process list only knows Wine processes, and whoever
+    /// started the process hears it exit. Keep such an entry out of
+    /// ``observe(_:running:at:)``: a session no watcher follows ends on the
+    /// first "not running" the poller reports.
+    public func beganNative(_ entry: LibraryEntry, at date: Date = Date()) {
+        guard !entry.isLauncher, active[entry.id] == nil else { return }
+        active[entry.id] = GameSession(id: UUID(), entry: entry, startedAt: date, seenRunning: true)
+    }
+
+    /// Ends the session of a game started with ``beganNative(_:at:)``, once
+    /// its process exited.
+    public func finished(_ entryID: String, at date: Date = Date()) {
+        guard let session = active[entryID] else { return }
+        finish(entryID, sessionID: session.id, at: date)
+    }
+
     /// What the library's Steam poller saw for one entry.
     ///
     /// A game the poller sees running without a launch from Kadeh starts a

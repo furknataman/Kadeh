@@ -49,7 +49,9 @@ struct HomeView: View {
             if let hero {
                 content(hero: hero)
             } else if model.hasLoaded {
-                LibraryEmptyState(bottles: bottles, openBottle: openBottle)
+                LibraryEmptyState(bottles: bottles, openBottle: openBottle) {
+                    model.switchSetup = SwitchSetupRequest(notice: nil)
+                }
             }
         }
         .navigationTitle("home.title")

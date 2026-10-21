@@ -49,11 +49,14 @@ public enum GameEndActions {
         let stop = end.endedAt
         Task.detached(priority: .utility) {
             // Every game goes into the week-by-week history; only a program's
-            // time goes into the totals, since Steam keeps its own count,
-            // which also knows about other PCs.
+            // or a Switch game's time goes into the totals, since Steam keeps
+            // its own count, which also knows about other PCs.
             PlayHistoryStore().append(entryID: entry.id, from: start, to: stop)
-            if case .program = entry.launch {
+            switch entry.launch {
+            case .program, .switchGame:
                 PlaytimeStore().record(entryID: entry.id, from: start, to: stop)
+            case .steam:
+                break
             }
             await MainActor.run {
                 NotificationCenter.default.post(name: .playtimeChanged, object: entry.id)

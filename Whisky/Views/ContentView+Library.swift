@@ -31,7 +31,7 @@ extension ContentView {
     var libraryReloadTrigger: String {
         let bottles = activeBottles
         let pins = bottles.flatMap { $0.settings.pins.map(\.name) }
-        return (bottles.map(\.url.path) + pins + ["\(triggerRefresh)"]).joined(separator: "\u{1F}")
+        return (bottles.map(\.url.path) + pins + [switchGamesFolder, "\(triggerRefresh)"]).joined(separator: "\u{1F}")
     }
 
     /// The home screen, library or playtime list, with game pages pushed over

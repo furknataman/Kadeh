@@ -43,6 +43,9 @@ struct ContentView: View {
     @State var newlyCreatedBottleURL: URL?
     @State var openedFileURL: URL?
     @State var triggerRefresh: Bool = false
+    /// ``SwitchEmulator/gamesFolder``'s own key, watched so a folder chosen
+    /// from Settings shows up in the library too.
+    @AppStorage("switch.gamesFolder") var switchGamesFolder = ""
     @State var refreshAnimation: Angle = .degrees(0)
 
     @State var toast: ToastData?
@@ -167,6 +170,10 @@ struct ContentView: View {
         .sheet(isPresented: $showSetup) {
             SetupView(showSetup: $showSetup, firstTime: false)
         }
+        // Reloaded on close: a step done in the sheet can change what the library shows.
+        .sheet(item: $library.switchSetup, onDismiss: { triggerRefresh.toggle() }, content: { request in
+            SwitchSetupSheet(notice: request.notice, play: request.game.map { row in { play(row) } })
+        })
         .sheet(item: $openedFileURL) { url in
             FileOpenView(
                 fileURL: url,

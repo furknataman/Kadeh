@@ -137,6 +137,10 @@ public enum InstallSize {
             case let .program(url):
                 let folder = url.deletingLastPathComponent()
                 return isOwnFolder(folder) ? folderSize(folder) : nil
+            case let .switchGame(url):
+                // The whole game is this one file.
+                let size = try? url.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize
+                return size.map(Int64.init)
             }
         }.value
         cache.store(size, for: entry.id)

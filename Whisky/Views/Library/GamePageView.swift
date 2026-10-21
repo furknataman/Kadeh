@@ -47,6 +47,10 @@ struct GamePageView: View {
         return false
     }
 
+    /// A Switch game runs in the emulator, which keeps its own saves: no bottle
+    /// to back up from or configure.
+    private var isSwitch: Bool { row.item.source == .nintendoSwitch }
+
     private var state: LibraryEntryState { model.state(for: row.item) }
 
     private var pageColor: Color {
@@ -79,7 +83,7 @@ struct GamePageView: View {
             VStack(alignment: .leading, spacing: 24) {
                 GameStatsStrip(
                     row: row, size: size, directX: directX, dx12Warning: dx12Warning,
-                    backup: model.backupOverviews[row.id],
+                    backup: isSwitch ? nil : model.backupOverviews[row.id],
                     openBottleSettings: openBottleSettings,
                     showSaves: {
                         withAnimation { proxy.scrollTo(Self.savesID, anchor: .top) }
@@ -91,14 +95,16 @@ struct GamePageView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                VStack(alignment: .leading, spacing: 12) {
-                    // Live, so restoring locks the moment the game starts.
-                    GameSavesSection(entry: row.item, isBusy: model.isBusy(row.item))
+                if !isSwitch {
+                    VStack(alignment: .leading, spacing: 12) {
+                        // Live, so restoring locks the moment the game starts.
+                        GameSavesSection(entry: row.item, isBusy: model.isBusy(row.item))
+                    }
+                    .padding(18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .id(Self.savesID)
                 }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .id(Self.savesID)
             }
             .padding(.horizontal, 40)
             .padding(.top, 8)
@@ -224,7 +230,8 @@ private struct GameStatsStrip: View {
         if let backup {
             stat("game.page.stat.backup", divided: divided) { backupValue(backup) }
         }
-        if let bottleName = row.bottleName {
+        // A Switch game's "Nintendo Switch" is not a bottle, and the label would say it was.
+        if let bottleName = row.bottleName, row.item.source != .nintendoSwitch {
             stat("game.page.stat.bottle", divided: divided) { Text(bottleName) }
         }
     }

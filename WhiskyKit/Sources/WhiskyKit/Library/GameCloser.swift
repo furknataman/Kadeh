@@ -45,11 +45,20 @@ public enum GameCloser {
 
     /// Closes every process of a library entry.
     public static func close(_ entry: LibraryEntry) async {
+        // A Switch game has no bottle; the emulator is a Mac process of its own.
+        if case .switchGame = entry.launch {
+            await SwitchLauncher.stop(entry.id)
+            return
+        }
         await close(entry, in: Bottle(bottleUrl: entry.bottleURL))
     }
 
     /// ``close(_:)`` with the bottle already at hand.
     public static func close(_ entry: LibraryEntry, in bottle: Bottle) async {
+        if case .switchGame = entry.launch {
+            await SwitchLauncher.stop(entry.id)
+            return
+        }
         let scope = await Task.detached { GameProcessScope.of(entry) }.value
         let processes = await HostWineProcesses.current().filter(scope.matches)
         await close(processes, in: bottle)

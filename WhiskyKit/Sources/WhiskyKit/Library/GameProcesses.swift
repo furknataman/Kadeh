@@ -206,6 +206,10 @@ public struct GameProcessScope: Equatable, Sendable {
                 bottleURL: entry.bottleURL, folder: install, executable: nil,
                 names: extraNames.union(install.map { GameProcessScope.executableNames(under: $0) } ?? [])
             )
+        case .switchGame:
+            // Matches nothing: the emulator is not a Wine process, and
+            // ``SwitchLauncher`` follows the one it started.
+            return GameProcessScope(bottleURL: entry.bottleURL, folder: nil, executable: nil, names: [])
         }
     }
 

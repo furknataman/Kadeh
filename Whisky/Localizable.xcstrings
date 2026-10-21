@@ -116291,6 +116291,722 @@
           }
         }
       }
+    },
+    "switch.add" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch oyunu ekle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Switch Games"
+          }
+        }
+      }
+    },
+    "switch.error.badArchive" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirilen dosya kurulamadı."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded file couldn't be installed."
+          }
+        }
+      }
+    },
+    "switch.error.generic" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu adım tamamlanamadı."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This step couldn't be completed."
+          }
+        }
+      }
+    },
+    "switch.error.mismatch" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirilen dosya beklenen dosyayla eşleşmediği için kurulmadı."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded file didn't match the expected one, so it wasn't installed."
+          }
+        }
+      }
+    },
+    "switch.error.notFirmware" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, bir sistem yazılımı değil. İçinde .nca dosyaları olan klasörü ya da onun .zip dosyasını seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This isn't system software. Choose the folder full of .nca files, or its .zip file."
+          }
+        }
+      }
+    },
+    "switch.error.notKeys" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu dosya bir prod.keys dosyası değil. Adı prod.keys olan dosyayı seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This isn't a prod.keys file. Choose the file named prod.keys."
+          }
+        }
+      }
+    },
+    "switch.error.unreachable" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirme sunucusuna ulaşılamadı. İnternet bağlantınızı denetleyin; sunucu kapalıysa biraz sonra yeniden deneyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't reach the download server. Check your internet connection; if the server is down, try again a little later."
+          }
+        }
+      }
+    },
+    "switch.notice.emulator" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyunu oynamak için önce Switch programını kurun."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To play this game, install the Switch program first."
+          }
+        }
+      }
+    },
+    "switch.notice.firmware" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyunu oynamak için önce sistem yazılımını ekleyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To play this game, add your system software first."
+          }
+        }
+      }
+    },
+    "switch.notice.keys" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyunu oynamak için önce anahtar dosyanızı ekleyin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To play this game, add your keys file first."
+          }
+        }
+      }
+    },
+    "switch.play.failed" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch programı başlatılamadı."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Switch program couldn't be started."
+          }
+        }
+      }
+    },
+    "switch.play.fileMissing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyunun dosyası artık klasöründe değil."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This game's file is no longer in its folder."
+          }
+        }
+      }
+    },
+    "switch.settings.open" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch oyunları…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch Games…"
+          }
+        }
+      }
+    },
+    "switch.settings.progress %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 adımdan %lld tanesi tamam."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of 4 steps done."
+          }
+        }
+      }
+    },
+    "switch.settings.ready" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynamaya hazır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready to play."
+          }
+        }
+      }
+    },
+    "switch.settings.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nintendo Switch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nintendo Switch"
+          }
+        }
+      }
+    },
+    "switch.setup.close" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "switch.setup.done" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitti"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "switch.setup.intro" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi Nintendo Switch'inizdeki oyunları Kadeh'te oynayın. Bu dört adımı yalnızca bir kez tamamlamanız yeterli."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play games from your own Nintendo Switch in Kadeh. You only need to complete these four steps once."
+          }
+        }
+      }
+    },
+    "switch.setup.ownFiles" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh anahtar, sistem yazılımı ya da oyun indirmez. Kendi konsolunuzdan aldığınız dosyaları kullanın."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kadeh never downloads keys, system software or games. Use the files you dumped from your own console."
+          }
+        }
+      }
+    },
+    "switch.setup.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch oyunları"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch Games"
+          }
+        }
+      }
+    },
+    "switch.step.change" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değiştir…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change…"
+          }
+        }
+      }
+    },
+    "switch.step.emulator.action" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndir ve kur"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download and Install"
+          }
+        }
+      }
+    },
+    "switch.step.emulator.done %@" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ sürümü kurulu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@ is installed."
+          }
+        }
+      }
+    },
+    "switch.step.emulator.downloading" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndiriliyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading…"
+          }
+        }
+      }
+    },
+    "switch.step.emulator.missing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch oyunlarını Mac'te açan program. İnternetten indirilip kurulur. Mac sürümü henüz deneysel; bazı oyunlarda görüntü hatası olabilir."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The program that opens Switch games on your Mac. It is downloaded from the internet and installed. Its Mac version is still experimental; some games may show graphics glitches."
+          }
+        }
+      }
+    },
+    "switch.step.emulator.retry" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden dene"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        }
+      }
+    },
+    "switch.step.emulator.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch programı (Eden)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch program (Eden)"
+          }
+        }
+      }
+    },
+    "switch.step.firmware.action" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasör ya da .zip seç…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Folder or .zip…"
+          }
+        }
+      }
+    },
+    "switch.step.firmware.copying" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalanıyor…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copying…"
+          }
+        }
+      }
+    },
+    "switch.step.firmware.done" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem yazılımı eklendi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System software added."
+          }
+        }
+      }
+    },
+    "switch.step.firmware.missing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch'inizin sistem güncellemesi (firmware). Kendi konsolunuzdan aldığınız klasörü ya da .zip dosyasını seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Switch's system update (firmware). Select the folder or .zip file you got from your own console."
+          }
+        }
+      }
+    },
+    "switch.step.firmware.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem yazılımı"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System software"
+          }
+        }
+      }
+    },
+    "switch.step.games.action" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klasör seç…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Folder…"
+          }
+        }
+      }
+    },
+    "switch.step.games.done %lld" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld oyun bulundu."
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld game found."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld games found."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "switch.step.games.missing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun dosyalarınızın (.nsp ya da .xci) bulunduğu klasörü seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the folder that holds your game files (.nsp or .xci)."
+          }
+        }
+      }
+    },
+    "switch.step.games.none" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klasörde ve alt klasörlerinde .nsp ya da .xci dosyası yok. Başka bir klasör seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No .nsp or .xci files in this folder or its subfolders. Choose another folder."
+          }
+        }
+      }
+    },
+    "switch.step.games.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun klasörü"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games folder"
+          }
+        }
+      }
+    },
+    "switch.step.keys.action" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya seç…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select File…"
+          }
+        }
+      }
+    },
+    "switch.step.keys.done" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anahtar dosyası eklendi."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keys file added."
+          }
+        }
+      }
+    },
+    "switch.step.keys.missing" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi Switch'inizden aldığınız prod.keys adlı dosyayı seçin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the file named prod.keys that you got from your own Switch."
+          }
+        }
+      }
+    },
+    "switch.step.keys.title" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anahtar dosyası"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keys file"
+          }
+        }
+      }
+    },
+    "switch.step.cancel" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "switch.step.emulator.update" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

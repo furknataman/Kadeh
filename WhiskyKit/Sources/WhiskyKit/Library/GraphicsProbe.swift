@@ -50,6 +50,8 @@ public enum GraphicsProbe {
                 return directX(ofProgram: url)
             case let .steam(appID):
                 return directX(ofSteamApp: appID, bottleURL: bottleURL)
+            case .switchGame:
+                return nil
             }
         }.value
     }
@@ -95,6 +97,8 @@ public enum GraphicsProbe {
                 return warning(backend: launchBackend(overrides: overrides, bottleBackend: bottleBackend))
             case let .steam(appID):
                 return steamWarning(appID: appID, bottleURL: bottleURL, bottleBackend: bottleBackend, scanned: scanned)
+            case .switchGame:
+                return nil
             }
         }.value
     }

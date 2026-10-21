@@ -56,6 +56,16 @@ struct LibraryRow: Identifiable {
     var id: String { item.id }
 }
 
+/// A request to show the Switch setup sheet, with the step a Play press
+/// found missing and that game when it came from one.
+struct SwitchSetupRequest: Identifiable {
+    let id = UUID()
+    let notice: SwitchEmulator.Step?
+    /// Offered as "Oyna" once nothing is missing, so the press that opened
+    /// the sheet still ends in the game.
+    var game: LibraryRow?
+}
+
 /// Builds the library and owns what is currently starting or running.
 ///
 /// A view model rather than view state because the running half comes from a
@@ -88,6 +98,8 @@ final class LibraryModel: ObservableObject {
     @Published var closeRequest: LibraryRow?
     /// Steam games the bundled catalogue knows a Türkçe yama for.
     @Published private(set) var turkishPatchAppIDs: Set<Int> = []
+    /// The Switch setup sheet, when something asked for it.
+    @Published var switchSetup: SwitchSetupRequest?
 
     /// App IDs with a launch in flight, per bottle.
     @Published private var steamLaunching: [URL: Set<Int>] = [:]
@@ -154,6 +166,14 @@ final class LibraryModel: ObservableObject {
                 .launching
             } else {
                 .idle
+            }
+        case .switchGame:
+            // The emulator's own process starts and ends the session, so an
+            // active session is the whole answer.
+            if GameSessions.shared.active[entry.id] != nil {
+                .running
+            } else {
+                pendingLaunches.contains(entry.id) ? .launching : .idle
             }
         }
     }
@@ -247,6 +267,22 @@ final class LibraryModel: ObservableObject {
             }
         }
 
+        // Not per bottle: Switch games run in the emulator, so they show with no bottle at all.
+        if let folder = SwitchEmulator.gamesFolder {
+            let games = await Task.detached { SwitchLibrarySource.entries(in: folder) }.value
+            for item in games {
+                let played = playtime(for: item, steam: [:], counted: counted)
+                built.append(
+                    LibraryRow(
+                        item: item,
+                        bottleName: "Nintendo Switch",
+                        lastPlayed: played?.lastPlayed,
+                        playtime: played.map(\.seconds).flatMap { $0 > 0 ? $0 : nil }
+                    )
+                )
+            }
+        }
+
         rows = sorted(built)
         hasLoaded = true
         refreshBackupOverviews(for: built.map(\.id))
@@ -279,6 +315,9 @@ final class LibraryModel: ObservableObject {
                 .entries.map(\.startTime).max()
         case let .steam(appID):
             routed[appID]
+        case .switchGame:
+            // Only counted sessions, which ``playtime(for:steam:counted:)`` already reads.
+            nil
         }
     }
 
@@ -338,6 +377,10 @@ extension LibraryModel {
     /// saves is checked again at the last moment, since one can start while
     /// the launch was waiting.
     func launch(_ row: LibraryRow, bottles: [Bottle], useTerminal: Bool? = nil) {
+        if case let .switchGame(file) = row.item.launch {
+            launchSwitchGame(row, file: file)
+            return
+        }
         guard let bottle = bottles.first(where: { $0.url == row.item.bottleURL }) else { return }
         let entry = row.item
         let terminal = useTerminal ?? NSEvent.modifierFlags.contains(.shift)
@@ -369,6 +412,27 @@ extension LibraryModel {
                 guard !blockedByRestore(entry) else { return }
                 orchestrator(for: bottle).launch(found.0)
                 GameSessions.shared.began(entry, executables: found.1)
+            case .switchGame:
+                // Started at the top, before a bottle is looked for; never gets here.
+                pendingLaunches.remove(entry.id)
+            }
+        }
+    }
+
+    /// Starts a Switch game in the emulator, or says what is missing first: a game
+    /// file that moved is an error, a missing setup step opens the setup sheet
+    /// on that step. Nothing to read beforehand, so no pending state.
+    private func launchSwitchGame(_ row: LibraryRow, file: URL) {
+        let entry = row.item
+        if !FileManager.default.fileExists(atPath: file.path(percentEncoded: false)) {
+            launchError = String(localized: "switch.play.fileMissing")
+        } else if let step = SwitchEmulator.missingForPlay() {
+            switchSetup = SwitchSetupRequest(notice: step, game: row)
+        } else if !blockedByRestore(entry) {
+            do {
+                try SwitchLauncher.launch(entry, game: file)
+            } catch {
+                launchError = String(localized: "switch.play.failed")
             }
         }
     }
@@ -388,6 +452,10 @@ extension LibraryModel {
     /// Closes a running game, Steam or not, the way the Etkinlik window
     /// does: asked politely first, ended after a grace period.
     func close(_ row: LibraryRow, bottles: [Bottle]) {
+        if case .switchGame = row.item.launch {
+            Task { await GameCloser.close(row.item) }
+            return
+        }
         guard let bottle = bottles.first(where: { $0.url == row.item.bottleURL }) else { return }
         Task { await GameCloser.close(row.item, in: bottle) }
     }
